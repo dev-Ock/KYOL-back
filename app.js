@@ -26,6 +26,8 @@ const mypageRouter = require("./routes/mypage");
 
 const { sequelize } = require("./models");
 const passportConfig = require("./passport");
+const { isColString } = require("sequelize/types/lib/utils");
+const { CLIENT_RENEG_LIMIT } = require("tls");
 
 const app = express();
 passportConfig();
@@ -103,3 +105,5 @@ process.on("unhandledRejection", (err, promise) => {
   // Close server & exit process
   server.close(() => process.exit(1));
 });
+
+console.log("TEST")
