@@ -7,7 +7,7 @@ const { restart } = require("nodemon");
 
 const router = express.Router();
 
-// 회원가입
+// 회원가입;
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
   console.log(req.body);
   console.log(req.body.email);
@@ -34,6 +34,7 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
   }
 });
 
+// 로그인
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (authError, user, info) => {
     if (authError) {
@@ -57,6 +58,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
 
+// 로그아웃
 router.get("/logout", isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();

@@ -20,6 +20,8 @@ router.get("/", verifyToken, async (req, res, next) => {
   });
 });
 
+module.exports = router;
+
 // router.post();
 
 /*
