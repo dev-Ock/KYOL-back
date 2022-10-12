@@ -4,6 +4,7 @@ const { User, Domain } = require("../models");
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
+  console.log("main get");
   try {
     const user = await User.findOne({
       where: { id: (req.user && req.user.id) || null },
