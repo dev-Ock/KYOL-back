@@ -3,7 +3,8 @@ const Spaceship = require("../models/spaceship");
 const User = require("../models/user");
 const router = express.Router();
 
-router.get("/game", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
+  console.log("game get");
   try {
     const spaceshipList = await Spaceship.findAll({
       where: { id: req.user.id },
