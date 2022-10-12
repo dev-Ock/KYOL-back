@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "postgres",
-    "database": "shootingGame",
+    "database": "shootinggame",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
