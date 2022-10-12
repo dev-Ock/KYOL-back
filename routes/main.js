@@ -9,7 +9,6 @@ router.get("/", async (req, res, next) => {
       where: { id: (req.user && req.user.id) || null },
       include: { model: Domain },
     });
-
     res
       .status(200)
       .json({ success: true, data: { user, domains: user && user.Domains } });
