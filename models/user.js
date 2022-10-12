@@ -7,19 +7,17 @@ module.exports = class User extends Sequelize.Model {
         email: {
           type: Sequelize.STRING(40),
           allowNull: false,
-          unique: true,
         },
         nick: {
           type: Sequelize.STRING(15),
           allowNull: false,
-          unique: true,
         },
         password: {
           type: Sequelize.STRING(100),
           allowNull: false,
         },
         gold: {
-          type: Sequelize.NUMBER(40),
+          type: Sequelize.INTEGER(40),
           allowNull: false,
           defaultValue: 0,
         },
@@ -43,7 +41,7 @@ module.exports = class User extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: "User",
-        tableName: "users",
+        tableName: "Users",
         paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
