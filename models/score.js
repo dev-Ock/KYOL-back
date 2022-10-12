@@ -5,7 +5,7 @@ module.exports = class Score extends Sequelize.Model {
     return super.init(
       {
         score: {
-          type: Sequelize.NUMBER(40),
+          type: Sequelize.INTEGER(40),
           allowNull: false,
         },
         usedShip: {
