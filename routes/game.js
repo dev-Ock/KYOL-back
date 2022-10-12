@@ -1,3 +1,8 @@
+const express = require("express");
+const Spaceship = require("../models/spaceship");
+const User = require("../models/user");
+const router = express.Router();
+
 router.get("/game", async (req, res, next) => {
   try {
     const spaceshipList = await Spaceship.findAll({
@@ -17,3 +22,5 @@ router.get("/game", async (req, res, next) => {
     next(err);
   }
 });
+
+module.exports = router;
