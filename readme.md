@@ -106,6 +106,13 @@
 
 ## 로그인, 회원가입 기능
 
-22.10.08
+22.10.11
 
 - package.json, config, models, passport, routes, app.js 만듬
+
+## game, mypage 기능
+
+22.10.12
+
+- routes/game.js 만듬
+- routes/mypage.js 만드는 중
