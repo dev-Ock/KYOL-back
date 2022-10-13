@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 const router = express.Router();
 
-router.post("/token", async (req, res) => {
+router.post("/", async (req, res) => {
   const requestUser = req.body;
   try {
     const checkUser = await User.findOne({

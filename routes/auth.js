@@ -15,7 +15,7 @@ router.post("/join", async (req, res, next) => {
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
       return res.status(303).json({
-        message: "join-failure-existUser",
+        message: "join-failure-not exist User",
       });
     }
     const hash = await bcrypt.hash(password, 12);
@@ -29,7 +29,10 @@ router.post("/join", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(error);
+    // return next(error);
+    return res.status(500).json({
+      message: "join-failure-Server error",
+    });
   }
 });
 
@@ -45,16 +48,12 @@ router.post("/login", async (req, res, next) => {
     }
     if (exUser) {
       const result = await bcrypt.compare(password, exUser.password);
-      if (result) {
-        done(null, exUser);
-      } else {
-        done(null, false, { message: "비밀번호가 일치하지 않습니다." });
+      if (!result) {
         return res.status(400).json({
           message: "login-failure-wrongPassword",
         });
       }
     } else {
-      done(null, false, { message: "가입되지 않은 회원입니다." });
       return res.status(404).json({
         message: "login-failure-notUser",
       });
@@ -77,7 +76,10 @@ router.post("/login", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(error);
+    // return next(error);
+    return res.status(500).json({
+      message: "login-failure",
+    });
   }
 });
 
