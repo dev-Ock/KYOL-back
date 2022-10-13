@@ -21,7 +21,7 @@ const shopRouter = require("./routes/shop");
 const rankingRouter = require("./routes/ranking");
 const gameRouter = require("./routes/game");
 const tokenRouter = require("./routes/token");
-// const mypageRouter = require("./routes/mypage");
+const mypageRouter = require("./routes/mypage");
 
 // const errorHandler = require("./routes/middlewares");
 
@@ -87,7 +87,7 @@ app.use("/token", tokenRouter);
 app.use("/game", gameRouter);
 app.use("/ranking", rankingRouter);
 app.use("/shop", shopRouter);
-// app.use("/mypage", mypageRouter);
+app.use("/mypage", mypageRouter);
 
 // app.use(errorHandler);
 
