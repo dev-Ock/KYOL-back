@@ -104,21 +104,15 @@
   <br>
   <br>
 
-  22.10.11
-
-## 로그인, 회원가입 기능
+## 로그인, 회원가입 기능 (22.10.11)
 
 - package.json, config, models, passport, routes, app.js 만듬
 
-  22.10.12
-
-## game, mypage GET 기능 구현
+## game, mypage GET 기능 구현 (22.10.12)
 
 - routes/game.js 만듬
 - routes/mypage.js 만듬
 
-  22.10.13
-
-## 모든 url GET 기능 구현
+## 모든 url GET 기능 구현 (22.10.13)
 
 - auth, game, mypage, ranking, shop
