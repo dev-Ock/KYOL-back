@@ -6,13 +6,9 @@ const router = express.Router();
 
 /*
   (1) 프로필 : 
-  사용자의 현재 우주선 img, 
-  nickname, 
-  cash, 
-  순위조회(score DB에서 score  기준 1~100위 안에 있으면 순위 보여준다. 100위 안에 없으면 ‘100위 안에 없습니다. 기다리고 있겠습니다.’ 글 보이게), 
-  내가 구매한 우주선 list) 
+  사용자의 현재 우주선 img, 내가 구매한 우주선 list, nickname, cash, 
+  순위조회(score DB에서 score  기준 1~100위 안에 있으면 순위 보여준다. 100위 안에 없으면 ‘100위 안에 없습니다. 기다리고 있겠습니다.’ 글 보이게)) 
 */
-
 router.get("/", async (req, res, next) => {
   try {
     console.log(GET / mypage);
@@ -20,7 +16,9 @@ router.get("/", async (req, res, next) => {
       where: { id: req.user.id },
       include: [
         {
-          model: Score, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
+          model: Score,
+          order: ["score", "DESC"],
+          limit: 100, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
         },
         {
           model: Spaceship,
