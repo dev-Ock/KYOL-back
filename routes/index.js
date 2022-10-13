@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    console.log("hi");
+    console.log("GET /");
     res.status(200);
   } catch (err) {
     console.error(err);

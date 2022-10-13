@@ -60,6 +60,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
 
 // 로그아웃
 router.get("/logout", isLoggedIn, (req, res) => {
+  console.log(GET / auth / logout);
   req.logout();
   req.session.destroy();
   return res.status(200).json({
