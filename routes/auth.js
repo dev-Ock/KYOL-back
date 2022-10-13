@@ -1,16 +1,15 @@
 const express = require("express");
-const passport = require("passport");
 const bcrypt = require("bcrypt");
-const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const User = require("../models/user");
-const { restart } = require("nodemon");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
 // 회원가입;
-router.post("/join", isNotLoggedIn, async (req, res, next) => {
+router.post("/join", async (req, res, next) => {
   console.log(req.body);
   console.log(req.body.email);
+
   const { email, nick, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
@@ -35,31 +34,55 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
 });
 
 // 로그인
-router.post("/login", isNotLoggedIn, (req, res, next) => {
-  passport.authenticate("local", (authError, user, info) => {
-    if (authError) {
-      console.error(authError);
-      return next(authError);
-    }
-    if (!user) {
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const exUser = await User.findOne({ where: { email } });
+    if (!exUser) {
       return res.status(404).json({
-        message: "login-faliure-notUser",
+        message: "login-failure-notUser",
       });
     }
-    return req.login(user, (loginError) => {
-      if (loginError) {
-        console.error(loginError);
-        return next(loginError);
+    if (exUser) {
+      const result = await bcrypt.compare(password, exUser.password);
+      if (result) {
+        done(null, exUser);
+      } else {
+        done(null, false, { message: "비밀번호가 일치하지 않습니다." });
+        return res.status(400).json({
+          message: "login-failure-wrongPassword",
+        });
       }
-      return res.status(201).json({
-        message: "login-success",
+    } else {
+      done(null, false, { message: "가입되지 않은 회원입니다." });
+      return res.status(404).json({
+        message: "login-failure-notUser",
       });
+    }
+    const token = jwt.sign(
+      {
+        id: exUser.email,
+        nick: exUser.nick,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "30m", // 30분
+        issuer: "KYOL",
+      }
+    );
+    return res.status(201).json({
+      message: "토큰이 발급되었습니다",
+      token,
+      user: exUser,
     });
-  })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
 });
 
 // 로그아웃
-router.get("/logout", isLoggedIn, (req, res) => {
+router.get("/logout", (req, res) => {
   console.log(GET / auth / logout);
   req.logout();
   req.session.destroy();
@@ -67,17 +90,5 @@ router.get("/logout", isLoggedIn, (req, res) => {
     message: "logout-success",
   });
 });
-
-// router.get("/kakao", passport.authenticate("kakao"));
-
-// router.get(
-//   "/kakao/callback",
-//   passport.authenticate("kakao", {
-//     failureRedirect: "/main",
-//   }),
-//   (req, res) => {
-//     res.redirect("/main");
-//   }
-// );
 
 module.exports = router;

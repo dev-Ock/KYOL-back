@@ -2,14 +2,12 @@ const express = require("express");
 // const verifyToken = require("./middlewares");
 const Spaceship = require("../models/spaceship");
 const User = require("../models/user");
+const verifyToken = require("./middlewares");
 
 const router = express.Router();
 
-
 // 사용자 정보, 사용자가 보유하고 있는 우주선 목록 등 get
-router.get("/", async (req, res, next) => {
-  console.log("game get");
-
+router.get("/", verifyToken, async (req, res, next) => {
   try {
     console.log("GET /game");
     const spaceshipList = await Spaceship.findAll({

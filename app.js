@@ -87,8 +87,6 @@ app.use("/auth", authRouter);
 // app.use("/shop", shopRouter);
 // app.use("/mypage", mypageRouter);
 
-
-
 // app.use(errorHandler);
 
 app.use((req, res, next) => {
