@@ -9,16 +9,19 @@ const router = express.Router();
 router.get("/", verifyToken, async (req, res, next) => {
   console.log("GET /ranking 완료");
   try {
-    // const getScore = await Score.findOne({
-    //   where: { id: req.user.id },
-    // });
-    // const userDetail = await User.findAll({
-    //   where: { id: req.user.id },
-    // });
-    // res.status(200).json({ success: true, data: getScore, message: "success" });
-    // res
-    //   .status(200)
-    //   .json({ success: true, data: userDetail, message: "success" });
+    const topRanking = await Score.findAll({
+      order: [["score", "DESC"]],
+      limit: 10,
+    });
+    const weeklyRanking = await Score.findAll({});
+
+    const userDetail = await User.findAll({
+      where: { id: req.headers.userid },
+    });
+    const result = { getScore, userDetail };
+    res
+      .status(200)
+      .json({ success: true, data: result, message: "get /ranking - success" });
   } catch (err) {
     console.error(err);
     next(err);

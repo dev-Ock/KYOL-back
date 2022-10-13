@@ -7,29 +7,28 @@ const router = express.Router();
 /*
   (1) 프로필 : 
   사용자의 현재 우주선 img, 내가 구매한 우주선 list, nickname, cash, 
-  순위조회(score DB에서 score  기준 1~100위 안에 있으면 순위 보여준다. 100위 안에 없으면 ‘100위 안에 없습니다. 기다리고 있겠습니다.’ 글 보이게)) 
+  순위조회(score DB에서 score 기준 1~100위 안에 있으면 순위 보여준다.) 
 */
 router.get("/", verifyToken, async (req, res, next) => {
   try {
-    console.log("GET / mypage 마이페이지야");
-    // const profile = await User.findOne({
-    //   where: { id: req.user.id },
-    //   include: [
-    //     {
-    //       model: Score,
-    //       order: ["score", "DESC"],
-    //       limit: 100, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
-    //     },
-    //     {
-    //       model: Spaceship,
-    //       attribute: ["shipName"],
-    //     },
-    //   ],
-    // });
-    // res.status(200).json({
-    //   message: "success",
-    //   user: profile,
-    // });
+    const profile = await User.findOne({
+      where: { id: req.headers.userid },
+      include: [
+        {
+          model: Score,
+          order: [["score", "DESC"]],
+          limit: 100, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
+        },
+        {
+          model: Spaceship,
+          attribute: ["shipName"],
+        },
+      ],
+    });
+    res.status(200).json({
+      message: "get /mypage - success",
+      user: profile,
+    });
   } catch (err) {
     console.error(err);
     next(err);
