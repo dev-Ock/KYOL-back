@@ -5,8 +5,11 @@ const User = require("../models/user");
 
 const router = express.Router();
 
+
 // 사용자 정보, 사용자가 보유하고 있는 우주선 목록 등 get
 router.get("/", async (req, res, next) => {
+  console.log("game get");
+
   try {
     console.log("GET /game");
     const spaceshipList = await Spaceship.findAll({
