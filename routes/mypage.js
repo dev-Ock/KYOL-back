@@ -32,10 +32,61 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password) // nickname은 unique 조건
-router.post("/");
+// 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password)
+router.post("/", async (req, res, next) => {
+  try {
+    const { nick, password } = req.body;
+    const sameNick = await User.findOne({ where: { nick: nick } });
+    // 입력한 nick이나 password가 있다면
+    if (nick || password) {
+      // 입력한 nick이 있다면
+      if (nick) {
+        // 입력한 nick이 DB에 일치하는 것이 없다면
+        if (!sameNick) {
+          await User.update({ nick: nick });
+        }
+        // 입력한 nick이 DB에 일치하는 것이 있다면
+        else
+          return res.status(400).json({
+            message: "unavailable nickname",
+          });
+      }
+      if (password) {
+        const newPassword = await bcrypt.hash(password, 12);
+        User.update({
+          password: newPassword,
+        });
+      }
+      return res.status(201).json({
+        message: "update-success",
+      });
+    }
+    // 입력한 nick이나 password가 없다면
+    else
+      return res.status(400).json({
+        message: "no nick & no password",
+      });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "update-failure",
+    });
+  }
+});
 
 // 회원탈퇴
-router.delete("/");
+router.delete("/", async (req, res, next) => {
+  try {
+    await User.destroy({ where: { id: req.user.id } });
+    return res.status(200).json({
+      message: "delete-success",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "delete-failure",
+    });
+  }
+});
 
 module.exports = router;
