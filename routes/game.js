@@ -8,7 +8,7 @@ const router = express.Router();
 // 사용자 정보, 사용자가 보유하고 있는 우주선 목록 등 get
 router.get("/", async (req, res, next) => {
   try {
-    console.log("GET /game");
+    console.log("GET /game 완료");
     const spaceshipList = await Spaceship.findAll({
       where: { id: req.user.id },
     });
