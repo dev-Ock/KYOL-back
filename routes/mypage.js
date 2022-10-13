@@ -1,28 +1,8 @@
 const express = require("express");
-
 const verifyToken = require("./middlewares");
 const { User, Spaceship, Score } = require("../models");
 
 const router = express.Router();
-
-router.get("/", verifyToken, async (req, res, next) => {
-  const profile = await User.findOne({
-    where: { id: req.user.id },
-    include: [
-      {
-        model: Score, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
-      },
-      {
-        model: Spaceship,
-        attribute: ["shipName"],
-      },
-    ],
-  });
-});
-
-module.exports = router;
-
-// router.post();
 
 /*
   (1) 프로필 : 
@@ -33,6 +13,31 @@ module.exports = router;
   내가 구매한 우주선 list) 
 */
 
-// (2) 회원정보수정(password, nickname) : nickname은 unique 조건
+router.get("/", async (req, res, next) => {
+  try {
+    console.log(GET / mypage);
+    const profile = await User.findOne({
+      where: { id: req.user.id },
+      include: [
+        {
+          model: Score, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
+        },
+        {
+          model: Spaceship,
+          attribute: ["shipName"],
+        },
+      ],
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
 
-//  (3) 회원탈퇴 기능 : deletedAt
+// 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password) // nickname은 unique 조건
+router.post("/");
+
+// 회원탈퇴
+router.delete("/");
+
+module.exports = router;
