@@ -46,7 +46,10 @@ router.put("/", verifyToken, async (req, res, next) => {
       if (nick) {
         // 입력한 nick이 DB에 일치하는 것이 없다면
         if (!sameNick) {
-          await User.update({ nick: nick });
+          await User.update(
+            { nick: nick },
+            { where: { id: req.headers.userid } }
+          );
         }
         // 입력한 nick이 DB에 일치하는 것이 있다면
         else
@@ -56,9 +59,12 @@ router.put("/", verifyToken, async (req, res, next) => {
       }
       if (password) {
         const newPassword = await bcrypt.hash(password, 12);
-        User.update({
-          password: newPassword,
-        });
+        User.update(
+          {
+            password: newPassword,
+          },
+          { where: { id: req.headers.userid } }
+        );
       }
       return res.status(201).json({
         message: "update-success",
@@ -80,7 +86,7 @@ router.put("/", verifyToken, async (req, res, next) => {
 // 회원탈퇴
 router.delete("/", verifyToken, async (req, res, next) => {
   try {
-    await User.destroy({ where: { id: req.user.id } });
+    await User.destroy({ where: { id: req.headers.userid } });
     return res.status(200).json({
       message: "delete-success",
     });
