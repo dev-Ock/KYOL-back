@@ -3,17 +3,8 @@ const User = require("../models/user");
 
 exports.verifyToken = (req, res, next) => {
   try {
-    const checkAlive = User.findOne({ where: { id: req.decoded.id } });
-    if (checkAlive.deletedAt === null) {
-      req.decoded = jwt.verify(
-        req.headers.authorization,
-        process.env.JWT_SECRET
-      );
-      return next();
-    }
-    return res.status(400).json({
-      message: "Dead ID",
-    });
+    req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    return next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       // 유효기간 초과
