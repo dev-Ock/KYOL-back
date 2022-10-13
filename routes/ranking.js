@@ -6,7 +6,7 @@ const router = express.Router();
 // 랭킹을 조회하면 랭킹표에 나타낼 점수와 유저의 아이콘을 보여준다.
 // => DB 를 조회해서 해당 값을 불러온다 (Score, User)
 router.get("/", async (req, res, next) => {
-  console.log("GET /ranking");
+  console.log("GET /ranking 완료");
   try {
     // const getScore = await Score.findOne({
     //   where: { id: req.user.id },
