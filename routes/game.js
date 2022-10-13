@@ -6,21 +6,21 @@ const User = require("../models/user");
 const router = express.Router();
 
 // 사용자 정보, 사용자가 보유하고 있는 우주선 목록 등 get
-// router.get("/", verifyToken, async (req, res, next) => {
 router.get("/", verifyToken, async (req, res, next) => {
   try {
     console.log("GET /game 완료");
-    // const spaceshipList = await Spaceship.findAll({
-    //   where: { id: req.user.id },
-    // });
-    // const userDetail = await User.findAll({
-    //   where: { id: req.user.id },
-    // });
-    // res.status(200).json({
-    //   success: true,
-    //   data: [spaceshipList, userDetail],
-    //   message: "success",
-    // });
+    const spaceshipList = await Spaceship.findAll({
+      where: { UserId: req.headers.userid },
+    });
+    const userDetail = await User.findAll({
+      where: { id: req.headers.userid },
+    });
+    const result = { spaceshipList, userDetail };
+    res.status(200).json({
+      success: true,
+      data: result,
+      message: "get /game - success",
+    });
   } catch (err) {
     console.error(err);
     next(err);

@@ -2,14 +2,16 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 exports.verifyToken = (req, res, next) => {
+  console.log("req userId: ", req.headers.userid);
   console.log("req : ", req.headers);
   console.log("req : ", req.headers.authorization);
   try {
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
     console.log("req.decode : ", req.decoded);
-    return res.status(200).json({
-      message: "verifyToken success",
-    });
+    return next();
+    // return res.status(200).json({
+    //   message: "verifyToken success",
+    // });
   } catch (error) {
     console.log("error : ", error);
     console.log("errorname : ", error.name);
