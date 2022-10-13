@@ -7,9 +7,11 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const requestUser = req.body;
   try {
+    console.log("request user", requestUser);
     const checkUser = await User.findOne({
       where: { email: requestUser.email },
     });
+    console.log("checkUser: ", checkUser);
     if (!checkUser) {
       return res.status(401).json({
         code: 401,
@@ -23,7 +25,7 @@ router.post("/", async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "30m", // 30분
+        expiresIn: "60m", // 30분
         issuer: "KYOL",
       }
     );
