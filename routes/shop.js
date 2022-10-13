@@ -1,10 +1,11 @@
 const express = require("express");
+const { verifyToken } = require("./middlewares");
 const User = require("../models/user");
 const router = express.Router();
 
 // 상점페이지로 들어가면, 구매할 수 있는 상품리스트와 현재 보유골드를 보여준다.
 // => DB 를 조회해서 해당 값을 불러온다 (User)
-router.get("/", async (req, res, next) => {
+router.get("/", verifyToken, (req, res) => {
   console.log("GET /SHOP 완료");
   try {
     // const order = req.body.picked;
