@@ -3,8 +3,10 @@ const User = require("../models/user");
 
 exports.verifyToken = (req, res, next) => {
   try {
+
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
     return next();
+
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       // 유효기간 초과

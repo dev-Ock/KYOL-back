@@ -26,6 +26,10 @@ router.get("/", async (req, res, next) => {
         },
       ],
     });
+    res.status(200).json({
+      message: "success",
+      user: profile,
+    });
   } catch (err) {
     console.error(err);
     next(err);
@@ -33,7 +37,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password)
-router.post("/", async (req, res, next) => {
+router.put("/", async (req, res, next) => {
   try {
     const { nick, password } = req.body;
     const sameNick = await User.findOne({ where: { nick: nick } });
