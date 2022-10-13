@@ -65,7 +65,7 @@ router.post("/login", async (req, res, next) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "30m", // 30분
+        expiresIn: "60m", // 30분
         issuer: "KYOL",
       }
     );

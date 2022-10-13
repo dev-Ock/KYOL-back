@@ -1,5 +1,5 @@
 const express = require("express");
-const verifyToken = require("./middlewares");
+const { verifyToken } = require("./middlewares");
 const { User, Spaceship, Score } = require("../models");
 
 const router = express.Router();
@@ -9,27 +9,27 @@ const router = express.Router();
   사용자의 현재 우주선 img, 내가 구매한 우주선 list, nickname, cash, 
   순위조회(score DB에서 score  기준 1~100위 안에 있으면 순위 보여준다. 100위 안에 없으면 ‘100위 안에 없습니다. 기다리고 있겠습니다.’ 글 보이게)) 
 */
-router.get("/", async (req, res, next) => {
+router.get("/", verifyToken, async (req, res, next) => {
   try {
-    console.log(GET / mypage);
-    const profile = await User.findOne({
-      where: { id: req.user.id },
-      include: [
-        {
-          model: Score,
-          order: ["score", "DESC"],
-          limit: 100, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
-        },
-        {
-          model: Spaceship,
-          attribute: ["shipName"],
-        },
-      ],
-    });
-    res.status(200).json({
-      message: "success",
-      user: profile,
-    });
+    console.log("GET / mypage 마이페이지야");
+    // const profile = await User.findOne({
+    //   where: { id: req.user.id },
+    //   include: [
+    //     {
+    //       model: Score,
+    //       order: ["score", "DESC"],
+    //       limit: 100, // Score DB에서 score 컬럼을 내림차순 정렬하고 100위 안에 used.id 일치하는 score 점수들을
+    //     },
+    //     {
+    //       model: Spaceship,
+    //       attribute: ["shipName"],
+    //     },
+    //   ],
+    // });
+    // res.status(200).json({
+    //   message: "success",
+    //   user: profile,
+    // });
   } catch (err) {
     console.error(err);
     next(err);
@@ -37,7 +37,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password)
-router.put("/", async (req, res, next) => {
+router.put("/", verifyToken, async (req, res, next) => {
   try {
     const { nick, password } = req.body;
     const sameNick = await User.findOne({ where: { nick: nick } });
@@ -79,7 +79,7 @@ router.put("/", async (req, res, next) => {
 });
 
 // 회원탈퇴
-router.delete("/", async (req, res, next) => {
+router.delete("/", verifyToken, async (req, res, next) => {
   try {
     await User.destroy({ where: { id: req.user.id } });
     return res.status(200).json({
