@@ -6,7 +6,8 @@ exports.verifyToken = (req, res, next) => {
     const checkAlive = User.findOne({ where: { id: req.decoded.id } });
     if (checkAlive.deletedAt === null) {
       req.decoded = jwt.verify(
-        req.headers.authorization,
+        // req.headers.authorization,
+        req.body.jwt,
         process.env.JWT_SECRET
       );
       return next();
