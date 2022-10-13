@@ -81,9 +81,13 @@ app.use(passport.session());
 
 app.use("/", mainRouter);
 app.use("/auth", authRouter);
-app.use("/game", gameRouter);
-app.use("/ranking", rankingRouter);
-app.use("/shop", shopRouter);
+
+// app.use("/game", gameRouter);
+// app.use("/ranking", rankingRouter);
+// app.use("/shop", shopRouter);
+// app.use("/mypage", mypageRouter);
+
+
 
 // app.use(errorHandler);
 
@@ -97,7 +101,6 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
   res.status(err.status || 500);
-  // res.render("error");
 });
 
 // app.listen(PORT, () => {
