@@ -4,6 +4,7 @@ const { User, Domain } = require("../models");
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
+  console.log("main get");
   try {
     console.log("GET /main");
     const user = await User.findOne({

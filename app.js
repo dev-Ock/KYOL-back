@@ -17,9 +17,9 @@ dotenv.config({ path: "./config/.env" });
 
 const mainRouter = require("./routes");
 const authRouter = require("./routes/auth");
-// const shopRouter = require("./routes/shop");
-// const rankingRouter = require("./routes/ranking");
-// const gameRouter = require("./routes/game");
+const shopRouter = require("./routes/shop");
+const rankingRouter = require("./routes/ranking");
+const gameRouter = require("./routes/game");
 // const mypageRouter = require("./routes/mypage");
 
 // const errorHandler = require("./routes/middlewares");
@@ -81,10 +81,13 @@ app.use(passport.session());
 
 app.use("/", mainRouter);
 app.use("/auth", authRouter);
+
 // app.use("/game", gameRouter);
 // app.use("/ranking", rankingRouter);
 // app.use("/shop", shopRouter);
 // app.use("/mypage", mypageRouter);
+
+
 
 // app.use(errorHandler);
 
