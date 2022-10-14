@@ -116,3 +116,7 @@
 ## 모든 url GET 기능 구현 (22.10.13)
 
 - auth, game, mypage, ranking, shop
+
+## 게임, 상점 관련 기능 (22.10.14)
+
+- auth, game, mypage, ranking, shop

@@ -4,20 +4,24 @@ const { User, Scoredata, Spaceship } = require("../models");
 
 const router = express.Router();
 
-// 사용자 정보, 사용자가 보유하고 있는 우주선 목록 등 get
+// 게임 시작할 때, 사용자 정보, 사용자가 보유하고 있는 우주선 목록 등 get
 router.get("/", verifyToken, async (req, res, next) => {
   try {
     console.log("GET /game 완료");
-    const spaceshipList = await Spaceship.findAll({
-      where: { UserId: req.headers.userid },
-    });
+
     const user = await User.findOne({
       where: { id: req.headers.userid },
+      include: [
+        {
+          model: Spaceship,
+          attribute: ["shipName"],
+        },
+      ],
     });
-    const result = { spaceshipList, user };
+
     res.status(200).json({
       success: true,
-      data: result,
+      data: user,
       message: "get /game - success",
     });
   } catch (err) {
