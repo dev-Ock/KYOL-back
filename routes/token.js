@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "60m", // 30분
+        expiresIn: "600m", // 30분
         issuer: "KYOL",
       }
     );

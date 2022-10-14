@@ -17,8 +17,8 @@ module.exports = class Score extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Score",
-        tableName: "scores",
+        modelName: "Scoredata",
+        tableName: "scoredatas",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -27,6 +27,6 @@ module.exports = class Score extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Score.belongsTo(db.User);
+    db.Scoredata.belongsTo(db.User);
   }
 };
