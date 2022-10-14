@@ -24,7 +24,7 @@ module.exports = class User extends Sequelize.Model {
         curentShipImage: {
           type: Sequelize.STRING(100),
           allowNull: false,
-          defaultValue: "basicAircraft2.png",
+          defaultValue: "rocket1.png",
         },
         provider: {
           type: Sequelize.STRING(10),
@@ -52,6 +52,5 @@ module.exports = class User extends Sequelize.Model {
   static associate(db) {
     db.User.hasMany(db.Spaceship);
     db.User.hasMany(db.Scoredata);
-    db.User.hasMany(db.Domain);
   }
 };
