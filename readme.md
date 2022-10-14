@@ -48,10 +48,10 @@
 4. 랭킹 기능
 
 - weekly ranking, historical ranking 게시
-  (1) weekly ranking : score DB에서 점수 기반으로 상위 10명 점수 / 명예의 전당(1~3등) 별도 게시
-  (2) historical ranking : score DB에서 시간 기반(일주일)으로 상위 10명 점수
+  (1) weekly ranking : Scoredata DB에서 점수 기반으로 상위 10명 점수 / 명예의 전당(1~3등) 별도 게시
+  (2) historical ranking : Scoredata DB에서 시간 기반(일주일)으로 상위 10명 점수
 - 사용자들이 게임 끝날 때마다 랭킹 update
-- score DB에서 매주 한 번씩 data 업데이트 기능
+- Scoredata DB에서 매주 한 번씩 data 업데이트 기능
 
 5. 상점 기능
 

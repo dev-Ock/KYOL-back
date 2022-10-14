@@ -1,7 +1,6 @@
 const express = require("express");
 const { verifyToken } = require("./middlewares");
-const Spaceship = require("../models/spaceship");
-const User = require("../models/user");
+const { User, Scoredata, Spaceship } = require("../models");
 
 const router = express.Router();
 
@@ -12,10 +11,10 @@ router.get("/", verifyToken, async (req, res, next) => {
     const spaceshipList = await Spaceship.findAll({
       where: { UserId: req.headers.userid },
     });
-    const userDetail = await User.findAll({
+    const user = await User.findOne({
       where: { id: req.headers.userid },
     });
-    const result = { spaceshipList, userDetail };
+    const result = { spaceshipList, user };
     res.status(200).json({
       success: true,
       data: result,
@@ -27,9 +26,20 @@ router.get("/", verifyToken, async (req, res, next) => {
   }
 });
 
-// 현재 장착하고 있는 우주선 img, 획득한 score, gold 등 post
-/* router.post("/",verifyToken,(req,res,next)=>{
+// 현재 장착하고 있는 우주선(spaceship), 획득한 score, gold 등 post
+// spaceship을 User테이블 currentShipImage 컬럼과 Scoredata usedShip 컬럼에 각각 update해야 한다. Scoredata usedShip은 점수와 함께 남길 기록용. 한 사용자가 score 기록을 여러 번 남길 수 있다. User의 currentShipImage는 게임할 때, 상점 갈 때 필요.
+router.put("/", verifyToken, async (req, res, next) => {
+  const { gold, spaceship, score } = req.body;
 
+  await User.update(
+    { gold: gold, currentShipImage: spaceship },
+    { whewre: { id: req.headers.userid } }
+  );
+
+  await Scoredata.update(
+    { score: score, usedShip: spaceship },
+    { whewre: { id: req.headers.userid } }
+  );
 });
-*/
+
 module.exports = router;
