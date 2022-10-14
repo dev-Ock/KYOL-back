@@ -4,29 +4,23 @@ const { User, Spaceship } = require("../models");
 
 const router = express.Router();
 
-// 상점페이지로 들어가면, 구매할 수 있는 상품리스트와 현재 보유골드를 보여준다.
-// => DB 를 조회해서 해당 값을 불러온다 (User)
+// 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
 router.get("/", verifyToken, async (req, res) => {
   console.log("GET /SHOP 완료");
   try {
-    // const order = req.body.picked;
-    // const getScore = await Scoredata.findOne({
-    //   where: { id: req.user.id },
-    // });
-    // const userDetail = await User.findAll({
-    //   where: { id: req.user.id },
-    // });
     const user = await User.findOne({
       where: { id: req.headers.userid },
+      include: [
+        {
+          model: Spaceship,
+          attribute: ["shipName"],
+        },
+      ],
     });
-    const spaceship = await Spaceship.findAll({
-      where: { id: req.headers.userid },
-    });
-    const result = { user, spaceship };
 
     res
       .status(200)
-      .json({ success: true, data: result, message: "GET /shop - success" });
+      .json({ success: true, data: user, message: "GET /shop - success" });
   } catch (err) {
     console.error(err);
     next(err);
@@ -39,14 +33,8 @@ router.get("/", verifyToken, async (req, res) => {
 */
 router.post("/", verifyToken, async (req, res, next) => {
   const gold = User.findOne({ where: { id: req.headers.userid } });
+
   const { selectedShip } = req.body;
 });
-
-/*
-
-사용자가 상점에서 구매할 아이템을 선택했을 때, 현재 가지고 있는 
-
-
-*/
 
 module.exports = router;
