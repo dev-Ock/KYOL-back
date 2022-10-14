@@ -7,7 +7,7 @@ const router = express.Router();
 
 // 회원가입;
 router.post("/join", async (req, res, next) => {
-  console.log(req.body);
+  console.log("req body22 : ", req.body);
   console.log(req.body.email);
 
   const { email, nick, password } = req.body;
@@ -65,7 +65,7 @@ router.post("/login", async (req, res, next) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "60m", // 30분
+        expiresIn: "600m", // 30분
         issuer: "KYOL",
       }
     );
