@@ -1,5 +1,5 @@
 const express = require("express");
-const { User, Domain } = require("../models");
+const { User } = require("../models");
 
 const router = express.Router();
 
@@ -9,11 +9,8 @@ router.get("/", async (req, res, next) => {
     console.log("GET /main 완료");
     const user = await User.findOne({
       where: { id: (req.user && req.user.id) || null },
-      include: { model: Domain },
     });
-    res
-      .status(200)
-      .json({ success: true, data: { user, domains: user && user.Domains } });
+    res.status(200).json({ success: true, data: { user } });
   } catch (err) {
     console.error(err);
     next(err);
