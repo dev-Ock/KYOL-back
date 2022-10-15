@@ -5,14 +5,15 @@ const { User, Spaceship, Scoredata } = require("../models");
 const router = express.Router();
 
 /*
-  (1) 프로필 : 
+  프로필 : 
   사용자의 현재 우주선 img, 내가 구매한 우주선 list, nickname, cash, 
   순위조회(Scoredata DB에서 score 기준 1~100위 안에 있으면 순위 보여준다.) 
 */
 router.get("/", verifyToken, async (req, res, next) => {
   try {
     const profile = await User.findOne({
-      where: { id: req.headers.userid },
+      // where: { id: req.headers.userid },
+      where: { id: req.decoded.id },
       include: [
         {
           model: Scoredata,
@@ -32,69 +33,6 @@ router.get("/", verifyToken, async (req, res, next) => {
   } catch (err) {
     console.error(err);
     next(err);
-  }
-});
-
-// 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password)
-router.put("/", verifyToken, async (req, res, next) => {
-  try {
-    const { nick, password } = req.body;
-    const sameNick = await User.findOne({ where: { nick: nick } });
-    // 입력한 nick이나 password가 있다면
-    if (nick || password) {
-      // 입력한 nick이 있다면
-      if (nick) {
-        // 입력한 nick이 DB에 일치하는 것이 없다면
-        if (!sameNick) {
-          await User.update(
-            { nick: nick },
-            { where: { id: req.headers.userid } }
-          );
-        }
-        // 입력한 nick이 DB에 일치하는 것이 있다면
-        else
-          return res.status(400).json({
-            message: "unavailable nickname",
-          });
-      }
-      if (password) {
-        const newPassword = await bcrypt.hash(password, 12);
-        User.update(
-          {
-            password: newPassword,
-          },
-          { where: { id: req.headers.userid } }
-        );
-      }
-      return res.status(201).json({
-        message: "update-success",
-      });
-    }
-    // 입력한 nick이나 password가 없다면
-    else
-      return res.status(400).json({
-        message: "no nick & no password",
-      });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "update-failure",
-    });
-  }
-});
-
-// 회원탈퇴
-router.delete("/", verifyToken, async (req, res, next) => {
-  try {
-    await User.destroy({ where: { id: req.headers.userid } });
-    return res.status(200).json({
-      message: "delete-success",
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: "delete-failure",
-    });
   }
 });
 
