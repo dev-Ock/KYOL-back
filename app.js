@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const passport = require("passport");
+// const passport = require("passport");
 const morgan = require("morgan");
 const session = require("express-session");
 const dotenv = require("dotenv");
@@ -26,12 +26,12 @@ const mypageRouter = require("./routes/mypage");
 // const errorHandler = require("./routes/middlewares");
 
 const { sequelize } = require("./models");
-const passportConfig = require("./passport");
+// const passportConfig = require("./passport");
 // const { isColString } = require("sequelize/types/lib/utils");
 // const { CLIENT_RENEG_LIMIT } = require("tls");
 
 const app = express();
-passportConfig();
+// passportConfig();
 
 const PORT = process.env.PORT;
 app.set("port", PORT);
@@ -68,11 +68,10 @@ app.use(
   })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 // const versionOne = (routeName) => `/api/v2/${routeName}`;
-
 // app.use(versionOne("main"), mainRouter);
 // app.use(versionOne("auth"), authRouter);
 // app.use(versionOne("shop"), shopRouter);
@@ -82,12 +81,11 @@ app.use(passport.session());
 
 app.use("/", mainRouter);
 app.use("/auth", authRouter);
-app.use("/token", tokenRouter);
-
 app.use("/game", gameRouter);
+app.use("/mypage", mypageRouter);
 app.use("/ranking", rankingRouter);
 app.use("/shop", shopRouter);
-app.use("/mypage", mypageRouter);
+app.use("/token", tokenRouter);
 
 // app.use(errorHandler);
 
