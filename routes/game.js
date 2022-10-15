@@ -7,10 +7,10 @@ const router = express.Router();
 // 게임 시작할 때, 사용자 정보, 사용자가 보유하고 있는 우주선 목록 등 get
 router.get("/", verifyToken, async (req, res, next) => {
   try {
-    console.log("GET /game 완료");
-
+    console.log("GET /game 진입");
     const user = await User.findOne({
-      where: { id: req.headers.userid },
+      // where: { id: req.headers.userid },
+      where: { id: req.decoded.id },
       include: [
         {
           model: Spaceship,
@@ -37,12 +37,14 @@ router.put("/", verifyToken, async (req, res, next) => {
 
   await User.update(
     { gold: gold, currentShipImage: spaceship },
-    { whewre: { id: req.headers.userid } }
+    // { whewre: { id: req.headers.userid } }
+    { whewre: { id: req.decoded.id } }
   );
 
   await Scoredata.update(
     { score: score, usedShip: spaceship },
-    { whewre: { id: req.headers.userid } }
+    // { whewre: { id: req.headers.userid } }
+    { whewre: { id: req.decoded.id } }
   );
 });
 

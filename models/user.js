@@ -19,7 +19,7 @@ module.exports = class User extends Sequelize.Model {
         gold: {
           type: Sequelize.INTEGER(40),
           allowNull: false,
-          defaultValue: 0,
+          defaultValue: 100000,
         },
         curentShipImage: {
           type: Sequelize.STRING(100),

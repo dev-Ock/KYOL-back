@@ -15,12 +15,13 @@ dotenv.config({ path: "./config/.env" });
 
 // const v2 = require("./routes/v2");
 
-const mainRouter = require("./routes");
+// const indexRouter = require("./routes");
+// const mainRouter = require("./routes/main");
+// const tokenRouter = require("./routes/token");
 const authRouter = require("./routes/auth");
 const shopRouter = require("./routes/shop");
 const rankingRouter = require("./routes/ranking");
 const gameRouter = require("./routes/game");
-const tokenRouter = require("./routes/token");
 const mypageRouter = require("./routes/mypage");
 
 // const errorHandler = require("./routes/middlewares");
@@ -79,13 +80,14 @@ app.use(
 // app.use(versionOne("game"), gameRouter);
 // app.use(versionOne("mypage"), mypageRouter);
 
-app.use("/", mainRouter);
+// app.use("/", indexRouter);
+// app.use("/main", mainRouter);
+// app.use("/token", tokenRouter);
 app.use("/auth", authRouter);
 app.use("/game", gameRouter);
 app.use("/mypage", mypageRouter);
 app.use("/ranking", rankingRouter);
 app.use("/shop", shopRouter);
-app.use("/token", tokenRouter);
 
 // app.use(errorHandler);
 
