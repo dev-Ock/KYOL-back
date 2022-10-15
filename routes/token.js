@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const requestUser = req.body;
   try {
-    console.log("request user", requestUser);
+    console.log("POST /token request user", requestUser);
     const checkUser = await User.findOne({
       where: { email: requestUser.email },
     });
