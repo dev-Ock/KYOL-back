@@ -8,14 +8,14 @@ module.exports = class Spaceship extends Sequelize.Model {
           type: Sequelize.STRING(140),
           allowNull: false,
         },
-        speed: {
-          type: Sequelize.STRING(200),
-          allowNull: false,
-        },
-        bulletNumber: {
-          type: Sequelize.STRING(200),
-          allowNull: false,
-        },
+        // speed: {
+        //   type: Sequelize.STRING(200),
+        //   allowNull: false,
+        // },
+        // bulletNumber: {
+        //   type: Sequelize.STRING(200),
+        //   allowNull: false,
+        // },
       },
       {
         sequelize,
@@ -32,5 +32,9 @@ module.exports = class Spaceship extends Sequelize.Model {
 
   static associate(db) {
     db.Spaceship.belongsTo(db.User);
+    db.Spaceship.belongsTo(db.Shipdata, {
+      targetKey: "shipName",
+      foreignKey: "shipName",
+    });
   }
 };
