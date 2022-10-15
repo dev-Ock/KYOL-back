@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 exports.verifyToken = (req, res, next) => {
-  console.log("req userId: ", req.headers.userid);
-  console.log("req : ", req.headers);
-  console.log("req : ", req.headers.authorization);
+  console.log("middleeware req.headers.userid: ", req.headers.userid);
+  console.log("req.headers : ", req.headers);
+  console.log("req.headers.authorization : ", req.headers.authorization);
   try {
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
     console.log("req.decode : ", req.decoded);
