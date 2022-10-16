@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
 module.exports = class Shipdata extends Sequelize.Model {
   static init(sequelize) {
@@ -7,6 +7,7 @@ module.exports = class Shipdata extends Sequelize.Model {
         shipName: {
           type: Sequelize.STRING(140),
           allowNull: false,
+          unique: true,
         },
         speed: {
           type: Sequelize.STRING(200),
@@ -16,24 +17,28 @@ module.exports = class Shipdata extends Sequelize.Model {
           type: Sequelize.STRING(200),
           allowNull: false,
         },
+        cost: {
+          type: Sequelize.INTEGER(40),
+          allowNull: false,
+        },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Shipdata",
-        tableName: "shipdatas",
+        modelName: 'Shipdata',
+        tableName: 'shipdatas',
         paranoid: false,
-        charset: "utf8mb4",
-        collate: "utf8mb4_general_ci",
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_general_ci',
       }
     );
   }
 
   static associate(db) {
     db.Shipdata.hasMany(db.Spaceship, {
-      sourceKey: "shipName",
-      foreignKey: "shipName",
+      sourceKey: 'shipName',
+      foreignKey: 'shipName',
     });
   }
 };

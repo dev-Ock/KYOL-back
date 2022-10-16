@@ -1,13 +1,13 @@
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
 module.exports = class Spaceship extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        shipName: {
-          type: Sequelize.STRING(140),
-          allowNull: false,
-        },
+        // shipName: {
+        //   type: Sequelize.STRING(140),
+        //   allowNull: false,
+        // },
         // speed: {
         //   type: Sequelize.STRING(200),
         //   allowNull: false,
@@ -21,11 +21,11 @@ module.exports = class Spaceship extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Spaceship",
-        tableName: "spaceships",
-        paranoid: true,
-        charset: "utf8mb4",
-        collate: "utf8mb4_general_ci",
+        modelName: 'Spaceship',
+        tableName: 'spaceships',
+        paranoid: false,
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_general_ci',
       }
     );
   }
@@ -33,8 +33,8 @@ module.exports = class Spaceship extends Sequelize.Model {
   static associate(db) {
     db.Spaceship.belongsTo(db.User);
     db.Spaceship.belongsTo(db.Shipdata, {
-      targetKey: "shipName",
-      foreignKey: "shipName",
+      targetKey: 'shipName',
+      foreignKey: 'shipName',
     });
   }
 };
