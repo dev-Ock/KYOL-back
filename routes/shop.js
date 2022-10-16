@@ -38,7 +38,7 @@ shop에서 구매할 우주선(selectedShip)을 선택하면 사용자의 현재
 2. Spaceship테이블에는 내역 추가 (speed,bulletNumber는 front에 각 우주선에 대한 speed, bulletNumber 정보가 있으므로 DB에 저장할 필요 없음)
 */
 
-router.post("/", verifyToken, async (req, res, next) => {
+router.post("/purchase", verifyToken, async (req, res, next) => {
   // const gold = User.findOne({ where: { id: req.headers.userid } });
   const gold = await User.findOne({
     where: { id: req.decoded.id },
