@@ -1,6 +1,6 @@
 const express = require("express");
 const { verifyToken } = require("./middlewares");
-const { User, Spaceship } = require("../models");
+const { User, Shipdata, Spaceship } = require("../models");
 
 const router = express.Router();
 
@@ -22,6 +22,57 @@ router.get("/", verifyToken, async (req, res) => {
         },
       ],
     });
+
+
+
+    // (로그인한 사용자의 gold량 - shop에 있는 우주선) >=0
+/*
+
+  // 1. 보유gold와 우주선 가격을 비교하여 구매가능하면 true, 불가하면 false
+
+   const gold = User.findOne({ // 로그인한 사용자의 gold량
+        where : { id: req.decoded.id },
+        attributes : ['gold']
+      })
+
+  const allShip = Shipdata.findAll // Shipdata의 모든 우주선들. 객체로 나오나??
+
+  const shipNumber =  Shipdata.count() // Shipdata DB의 데이터 수
+  
+  
+  // gold 부족으로 살 수 없는 경우
+  const notAvailableTotal1 = []
+  
+  // 각각의 경우에 대해 for문
+  for(i=1;i<(shipNumber+1),i++) {
+ 
+  const notAvailable1 
+  = gold - (
+  각각의 우주선의 가격을 i가 포함되게 지정
+  allShip.~~~~~~~
+  )
+  
+  if(notAvailable1>=0){
+    return true
+  } else {
+    return false
+  }
+
+  notAvailableTotal1.push( notAvailable1 )
+  
+  }
+  
+  console.log( notAvailableTotal1 )
+
+
+  // 2. 보유하고 있는 우주선인지 확인을 통해 보유하고 있지 않아서 구매가능하면 true, 이미 보유하고 있으면 불가로 false
+
+ 
+
+*/
+
+
+
 
     res
       .status(200)
