@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const { Spaceship } = require("../models");
 
 const router = express.Router();
 
@@ -73,11 +74,16 @@ router.post("/join", async (req, res, next) => {
     }
 
     const hash = await bcrypt.hash(password, 12);
-    await User.create({
+    const user = await User.create({
       email,
       nick,
       password: hash,
     });
+    // 가입할 때 curentShipImage로 rocket1.png을 default로 받으므로 Spaceship 모델에 관계커리로 추가한다.
+    const spaceship = await Spaceship.create({
+      shipName: user.curentShipImage,
+    });
+    await user.addSpaceship(spaceship);
     return res.status(200).json({
       message: "join-success",
     });
