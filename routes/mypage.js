@@ -11,6 +11,7 @@ const router = express.Router();
 */
 router.get("/", verifyToken, async (req, res, next) => {
   try {
+    console.log("GET /mypage 진입");
     const profile = await User.findOne({
       // where: { id: req.headers.userid },
       where: { id: req.decoded.id },
@@ -35,7 +36,6 @@ router.get("/", verifyToken, async (req, res, next) => {
     next(err);
   }
 });
-
 
 // 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password)
 router.put("/auth-update", verifyToken, async (req, res, next) => {
@@ -98,6 +98,7 @@ router.delete("/auth-delete", verifyToken, async (req, res, next) => {
   try {
     // await User.destroy({ where: { id: req.headers.userid } });
     await User.destroy({ where: { id: req.decoded.id } });
+    await user.removeScoredatas();
     return res.status(200).json({
       message: "delete-success",
     });

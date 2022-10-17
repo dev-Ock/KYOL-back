@@ -1,5 +1,5 @@
 const express = require("express");
-const { verifyToken } = require("./middlewares");
+// const { verifyToken } = require("./middlewares");
 const Scoredata = require("../models/scoredata");
 const User = require("../models/user");
 const { sequelize } = require("../models");

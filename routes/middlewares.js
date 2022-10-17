@@ -3,9 +3,11 @@ const User = require("../models/user");
 
 exports.verifyToken = (req, res, next) => {
   // console.log("middleeware req.headers.userid: ", req.headers.userid);
-  console.log("req.headers : ", req.headers);
-  console.log("req.body : ", req.body);
-  console.log("req.decoded : ", req.decoded);
+  // console.log("req.headers : ", req.headers);
+  // console.log("req.body : ", req.body);
+  // console.log("req.decoded : ", req.decoded);
+  // console.log("req : ", req);
+  // console.log("req.decoded.id : ", req.decoded.id);
   // console.log("req.headers.authorization : ", req.headers.authorization);
   try {
     console.log("middeleware 진입");
@@ -16,7 +18,7 @@ exports.verifyToken = (req, res, next) => {
     //   message: "verifyToken success",
     // });
   } catch (error) {
-    // console.log("error : ", error);
+    console.log("error : ", error);
     // console.log("errorname : ", error.name);
     if (error.name === "TokenExpiredError") {
       // 유효기간 초과
