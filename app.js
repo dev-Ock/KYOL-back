@@ -13,10 +13,8 @@ dotenv.config({ path: "./config/.env" });
 
 // DBConnection();
 
-// const v2 = require("./routes/v2");
-
 // const indexRouter = require("./routes");
-// const mainRouter = require("./routes/main");
+const mainRouter = require("./routes/main");
 // const tokenRouter = require("./routes/token");
 const authRouter = require("./routes/auth");
 const shopRouter = require("./routes/shop");
@@ -81,7 +79,7 @@ app.use(
 // app.use(versionOne("mypage"), mypageRouter);
 
 // app.use("/", indexRouter);
-// app.use("/main", mainRouter);
+app.use("/main", mainRouter);
 // app.use("/token", tokenRouter);
 app.use("/auth", authRouter);
 app.use("/game", gameRouter);
@@ -110,6 +108,7 @@ app.use((err, req, res, next) => {
 //   );
 // });
 
+// const server =
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 대기중");
 });
@@ -118,5 +117,5 @@ app.listen(app.get("port"), () => {
 process.on("unhandledRejection", (err, promise) => {
   console.log(`Error: ${err.message}`.red);
   // Close server & exit process
-  server.close(() => process.exit(1));
+  // server.close(() => process.exit(1));
 });
