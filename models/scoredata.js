@@ -27,6 +27,8 @@ module.exports = class Score extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Scoredata.belongsTo(db.User);
+    db.Scoredata.belongsTo(db.User, {
+      onDelete: "cascade",
+    });
   }
 };

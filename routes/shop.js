@@ -16,10 +16,11 @@ router.get("/", verifyToken, async (req, res) => {
     const user = await User.findOne({
       // where: { id: req.headers.userid },
       where: { id: req.decoded.id },
+      attributese: ["gold"],
       include: [
         {
           model: Spaceship,
-          attribute: ["shipName"],
+          attributes: ["shipName"],
         },
       ],
     });
@@ -28,74 +29,86 @@ router.get("/", verifyToken, async (req, res) => {
     /////////////////////////////////////////////////////////////////////
 
     // 1. 보유하고 있는 우주선인지 확인을 통해 보유하고 있지 않아서 구매가능하면 true, 이미 보유하고 있으면 불가로 false
-
-    const userShipName = await Spaceship.findAll({
-      // 로그인한 사용자의 보유한 우주선. 객체로 나오나??
-      where: { id: req.decoded.id },
-      attribute: ["shipName"],
-    });
-
-    const allShipName = Shipdata.findAll({
-      // Shipdata의 모든 우주선들의 name. 객체로 나오나??
+    // (1) 로그인한 사용자의 보유한 우주선의 이름들이 포함되어있는 array
+    const userShipData = await Spaceship.findAll({
+      where: { userid: req.decoded.id },
       attributes: ["shipName"],
     });
 
-    // const shipNumber = Shipdata.count(); // Shipdata DB의 데이터 수
+    // 로그인한 사용자의 보유한 우주선의 이름들
+    const userShipName = [];
 
-    const shipNumber = Shipdata.findAll({
-      attribute: [sequelize.fn("count")],
+    for (i = 0; i < userShipData.length; i++) {
+      userShipName.push(userShipData[i].dataValues.shipName);
+    }
+
+    // (2) Shipdata의 모든 우주선의 이름들이 포함되어있는 array
+    const allShipData = await Shipdata.findAll({
+      attributes: ["shipName"],
     });
 
-    console.log("###############");
-    console.log("userShipName : ", userShipName);
-    console.log("allShipName : ", allShipName);
-    console.log("shipNumber : ", shipNumber);
-    console.log("@@@@@@@@@@@@@");
+    // 모든 우주선의 이름들
+    const allShipName = [];
+
+    for (i = 0; i < allShipData.length; i++) {
+      allShipName.push(allShipData[i].dataValues.shipName);
+    }
 
     // shop에 있는 우주선을 보유한 우주선 중에서 찾아서 없으면 구매가능하여 true, 불가하면 false
     // true, false를 array에 담을 예정
-    const availableGold = [];
-
-    //둘 다 array로 가정하면
-    for (i = 1; i < shipNumber + 1; i++) {
-      if (userShipName.indexOf(allShipName[i]) == -1) {
-        availableGold.push(true);
-      } else {
-        availableGold.push(false);
-      }
-    }
-
-    console.log(availableGold); // value가 4개인지 확인하기
-
-    /////////////////////////////////////////////////////////////////////
-
-    // 2. 보유gold와 우주선 가격을 비교하여 구매가능하면 true, 불가하면 false
-
-    const userGold = User.findOne({
-      // 로그인한 사용자의 gold량
-      where: { id: req.decoded.id },
-      attribute: ["gold"],
-    });
-
-    const allShipCost = Shipdata.findAll({
-      // Shipdata의 모든 우주선들의 cost. 배열로 나오나??
-      attribute: ["cost"],
-    });
-
-    // 보유gold와 우주선 가격을 비교하여 구매가능하면 true, 불가하면 false
-    // true, false를 array에 담을 예정
     const availableShip = [];
 
-    // 각각의 경우에 대해 for문
-    for (i = 1; i < shipNumber + 1; i++) {
-      if (userGold >= allShipCost[i]) {
+    //둘 다 array로 가정하면
+    for (i = 0; i < allShipData.length; i++) {
+      if (userShipName.indexOf(allShipName[i]) == -1) {
         availableShip.push(true);
       } else {
         availableShip.push(false);
       }
     }
 
-    console.log(availableShip); // value가 4개인지 확인하기
+    console.log("###############");
+    console.log(userShipName);
+    console.log(allShipName);
+    console.log("availableShip : ", availableShip); // value가 4개인지 확인하기
+    console.log("@@@@@@@@@@@@@");
+
+    /////////////////////////////////////////////////////////////////////
+
+    // 2. 보유gold와 우주선 가격을 비교하여 구매가능하면 true, 불가하면 false
+
+    const gold = await User.findOne({
+      // 로그인한 사용자의 gold량
+      where: { id: req.decoded.id },
+      attributes: ["gold"],
+    });
+
+    const userGold = gold.dataValues.gold;
+
+    const allShipCostData = await Shipdata.findAll({
+      // Shipdata의 모든 우주선들의 cost. 배열로 나오나??
+      attributes: ["cost"],
+    });
+
+    const allShipCost = [];
+    for (i = 0; i < allShipData.length; i++) {
+      allShipCost.push(allShipCostData[i].dataValues.cost);
+    }
+
+    console.log("allshipcost: ", allShipCost);
+
+    // 보유gold와 우주선 가격을 비교하여 구매가능하면 true, 불가하면 false
+    // true, false를 array에 담을 예정
+    const availableGold = [];
+
+    // 각각의 경우에 대해 for문
+    for (i = 0; i < allShipData.length; i++) {
+      if (userGold >= allShipCost[i]) {
+        await availableGold.push(true);
+      } else {
+        await availableGold.push(false);
+      }
+    }
 
     /////////////////////////////////////////////////////////////////////
 
@@ -103,23 +116,24 @@ router.get("/", verifyToken, async (req, res) => {
 
     const availableResult = [];
 
-    for (i = 1; i < shipNumber + 1; i++) {
+    for (i = 0; i < allShipData.length; i++) {
       if (availableGold[i] == true && availableShip[i] == true) {
         availableResult.push(true);
       } else {
         availableResult.push(false);
       }
     }
-    console.log(availableResult); // value가 4개인지 확인하기
 
+    console.log("22###############");
+    console.log("availableGold : ", availableGold); // value가 4개인지 확인하기
+    console.log("availableShip : ", availableShip); // value가 4개인지 확인하기
+    console.log("availableResult : ", availableResult); // value가 4개인지 확인하기
+    console.log("11@@@@@@@@@@@@@");
     /////////////////////////////////////////////////////////////////////
 
     res.status(200).json({
       success: true,
-      data: user,
-      availableGold,
-      availableShip,
-      availableResult,
+      data: { user, availableGold, availableShip, availableResult },
       message: "GET /shop - success",
     });
   } catch (err) {
@@ -143,6 +157,7 @@ router.post("/purchase", verifyToken, async (req, res, next) => {
     where: { id: req.decoded.id },
     attributes: ["gold"],
   });
+
   const { selectedShip, selectedCost } = req.body;
   const afterGold = gold - selectedCost; // 우주선 구매 후 남은 gold
   if (afterGold >= 0) {
