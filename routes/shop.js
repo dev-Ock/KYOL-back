@@ -1,77 +1,56 @@
-const express = require('express');
-const { verifyToken } = require('./middlewares');
-const { User, Shipdata, Spaceship } = require('../models');
+const express = require("express");
+const { verifyToken } = require("./middlewares");
+const { User, Shipdata, Spaceship } = require("../models");
+const { sequelize } = require("../models");
 
 const router = express.Router();
 
 // 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
-router.get('/', verifyToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   // console.log("req.decoded : ", req.decoded);
   try {
-    console.log('GET /SHOP 진입');
-    console.log('req.headers : ', req.headers);
-    console.log('req.body : ', req.body);
-    console.log('req.decoded : ', req.decoded);
+    console.log("GET /SHOP 진입");
+    // console.log("req.headers : ", req.headers);
+    // console.log("req.body : ", req.body);
+    // console.log("req.decoded : ", req.decoded);
     const user = await User.findOne({
       // where: { id: req.headers.userid },
       where: { id: req.decoded.id },
       include: [
         {
           model: Spaceship,
-          attribute: ['shipName'],
+          attribute: ["shipName"],
         },
       ],
     });
-
+    // console.log("GET /shop user: ", user);
     /////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////
-    /*
-    17일에 할 일
-
-<먼저 할 일>
-1. MySQL
-
-shipdata DB
-- data를 미리 저장하기
-- 삭제 
-
-spaceship DB
-- data를 미리 저장하기
-- 삭제 
-
-2. VScode models
-- git merge 
-- shipdata.js, spaceship.js update 여부 확인
-
-3. MySQL
-
-shipdata DB
-- cost 컬럼 있는지 확인
-- spaceship DB 와의 관계커리 확인 
-- 데이터 넣기(4개만 넣기)
-
-spaceship DB
-- 데이터 넣기
-
-
-*/
-
     /////////////////////////////////////////////////////////////////////
 
     // 1. 보유하고 있는 우주선인지 확인을 통해 보유하고 있지 않아서 구매가능하면 true, 이미 보유하고 있으면 불가로 false
 
-    const userShipName = Spaceship.findAll({
+    const userShipName = await Spaceship.findAll({
       // 로그인한 사용자의 보유한 우주선. 객체로 나오나??
       where: { id: req.decoded.id },
-      attributes: ['shipName'],
+      attribute: ["shipName"],
     });
 
     const allShipName = Shipdata.findAll({
       // Shipdata의 모든 우주선들의 name. 객체로 나오나??
-      attributes: ['shipName'],
+      attributes: ["shipName"],
     });
 
-    const shipNumber = Shipdata.count(); // Shipdata DB의 데이터 수
+    // const shipNumber = Shipdata.count(); // Shipdata DB의 데이터 수
+
+    const shipNumber = Shipdata.findAll({
+      attribute: [sequelize.fn("count")],
+    });
+
+    console.log("###############");
+    console.log("userShipName : ", userShipName);
+    console.log("allShipName : ", allShipName);
+    console.log("shipNumber : ", shipNumber);
+    console.log("@@@@@@@@@@@@@");
 
     // shop에 있는 우주선을 보유한 우주선 중에서 찾아서 없으면 구매가능하여 true, 불가하면 false
     // true, false를 array에 담을 예정
@@ -95,12 +74,12 @@ spaceship DB
     const userGold = User.findOne({
       // 로그인한 사용자의 gold량
       where: { id: req.decoded.id },
-      attributes: ['gold'],
+      attribute: ["gold"],
     });
 
     const allShipCost = Shipdata.findAll({
       // Shipdata의 모든 우주선들의 cost. 배열로 나오나??
-      attributes: ['cost'],
+      attribute: ["cost"],
     });
 
     // 보유gold와 우주선 가격을 비교하여 구매가능하면 true, 불가하면 false
@@ -141,7 +120,7 @@ spaceship DB
       availableGold,
       availableShip,
       availableResult,
-      message: 'GET /shop - success',
+      message: "GET /shop - success",
     });
   } catch (err) {
     console.error(err);
@@ -158,11 +137,11 @@ shop에서 구매할 우주선(selectedShip)을 선택하면 사용자의 현재
 2. Spaceship테이블에는 내역 추가 (speed,bulletNumber는 front에 각 우주선에 대한 speed, bulletNumber 정보가 있으므로 DB에 저장할 필요 없음)
 */
 
-router.post('/purchase', verifyToken, async (req, res, next) => {
+router.post("/purchase", verifyToken, async (req, res, next) => {
   // const gold = User.findOne({ where: { id: req.headers.userid } });
   const gold = await User.findOne({
     where: { id: req.decoded.id },
-    attributes: ['gold'],
+    attributes: ["gold"],
   });
   const { selectedShip, selectedCost } = req.body;
   const afterGold = gold - selectedCost; // 우주선 구매 후 남은 gold
@@ -171,12 +150,12 @@ router.post('/purchase', verifyToken, async (req, res, next) => {
     await Spaceship.create({ shipName: selectedShip, UserId: req.decoded.id });
     res.status(200).json({
       success: true,
-      message: 'purchase - success',
+      message: "purchase - success",
     });
   } else {
     res.status(400).json({
       success: false,
-      message: 'purchase - failure',
+      message: "purchase - failure",
     });
   }
 });

@@ -2,23 +2,76 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const { verifyToken } = require("./middlewares");
 
 const router = express.Router();
 
 // 회원가입;
+// 1. emaail 중복 검사
+router.post("/join/email-check", async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    console.log("POST /join/email-check 진입");
+    const exUser = await User.findOne({ where: { email } });
+    if (exUser) {
+      return res.status(303).json({
+        message: "email-check-failure-duplicated",
+      });
+    } else {
+      return res.status(202).json({
+        message: "email-check-succeess",
+      });
+    }
+  } catch (err) {
+    console.error(error);
+    return res.status(500).json({
+      message: "email-check-failure-Server error",
+    });
+  }
+});
+
+// 2. nick 중복 검사
+router.post("/join/nick-check", async (req, res, next) => {
+  const { nick } = req.body;
+  try {
+    console.log("POST /join/nick-check 진입");
+    const exUser = await User.findOne({ where: { nick } });
+    if (exUser) {
+      return res.status(303).json({
+        message: "nick-check-failure-duplicated",
+      });
+    } else {
+      return res.status(202).json({
+        message: "nick-check-succeess",
+      });
+    }
+  } catch (err) {
+    console.error(error);
+    return res.status(500).json({
+      message: "nick-check-failure-Server error",
+    });
+  }
+});
+
+// 3. 최종 검사(email, nick) 후, User 모델에 저장
 router.post("/join", async (req, res, next) => {
   // console.log("POST /join req.body : ", req.body);
   // console.log("POST /join req.body.email : ", req.body.email);
   const { email, nick, password } = req.body;
   try {
-    console.log("회원가입 POST /join 진입");
-    const exUser = await User.findOne({ where: { email } });
-    if (exUser) {
+    console.log("POST /join 최종 진입");
+    const exUser1 = await User.findOne({ where: { email } });
+    const exUser2 = await User.findOne({ where: { nick } });
+    if (exUser1) {
       return res.status(303).json({
-        message: "join-failure-not exist User",
+        message: "email-check-failure-duplicated",
       });
     }
+    if (exUser2) {
+      return res.status(303).json({
+        message: "nick-check-failure-duplicated",
+      });
+    }
+
     const hash = await bcrypt.hash(password, 12);
     await User.create({
       email,
@@ -30,7 +83,6 @@ router.post("/join", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    // return next(error);
     return res.status(500).json({
       message: "join-failure-Server error",
     });

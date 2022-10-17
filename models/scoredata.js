@@ -19,7 +19,7 @@ module.exports = class Score extends Sequelize.Model {
         underscored: false,
         modelName: "Scoredata",
         tableName: "scoredatas",
-        paranoid: false,
+        paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
