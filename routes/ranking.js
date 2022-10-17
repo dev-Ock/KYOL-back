@@ -11,6 +11,7 @@ const router = express.Router();
 router.get("/", async (req, res, next) => {
   try {
     console.log("GET /ranking 진입");
+
     const topRanking = await Scoredata.findAll({
       order: [["score", "DESC"]],
       limit: 10,
