@@ -15,16 +15,13 @@ router.get("/", async (req, res, next) => {
     const topRanking = await Scoredata.findAll({
       order: [["score", "DESC"]],
       limit: 10,
-      include: [
-        {
-          model: User,
-          attributes: ["nick"],
-        },
-      ],
     });
+
     const weeklyRanking = await sequelize.query(
-      "SELECT scoredatasRanking.score, scoredatasRanking.usedShip, scoredatasRanking.createdAt, users.nick FROM (SELECT * FROM scoredatas WHERE createdAt BETWEEN DATE_ADD (NOW(), INTERVAL -1 WEEK) AND DATE_ADD(NOW(), INTERVAL 9 HOUR) ORDER BY score desc LIMIT 10) scoredatasRanking JOIN users ON scoredatasRanking.UserId = users.id"
+      "SELECT * FROM (SELECT * FROM scoredatas WHERE createdAt BETWEEN DATE_ADD (NOW(), INTERVAL -1 WEEK) AND DATE_ADD(NOW(), INTERVAL 9 HOUR) ORDER BY score desc LIMIT 10) scoredatasRanking"
     );
+
+    console.log(weeklyRanking);
     const result = { topRanking, weeklyRanking };
     res
       .status(200)
