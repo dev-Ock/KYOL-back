@@ -58,14 +58,15 @@ router.put("/update", verifyToken, async (req, res, next) => {
       attributes: ["gold"],
     });
 
-    const resultGold = Number(oriGold.dataValues.gold) + Number(gold);
+    const resultGold = parseInt(oriGold.dataValues.gold) + parseInt(gold);
+    const realScore = parseInt(score);
 
     await User.update(
       { gold: resultGold, currentShipImage: usedship },
       { where: { id: req.decoded.id } }
     );
 
-    console.log("score : ", score);
+    console.log("score : ", realScore);
     console.log("resultgold : ", resultGold);
     console.log("usedship : ", usedship);
 

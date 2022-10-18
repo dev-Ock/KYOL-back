@@ -3,24 +3,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { Spaceship } = require("../models");
-const { verifyToken } = require("./middlewares");
 
 const router = express.Router();
-
-router.get ("/join,", verifyToken, async (req, res, next) =>{
-  if (verifyToken) {
-    return res.status(301).redirect(`${VUE_APP_API}/`)
-  } 
-  next()
-})
-
-router.get ("/login,", verifyToken, async (req, res, next) =>{
-  if (verifyToken) {
-    return res.status(301).redirect(`${VUE_APP_API}/`)
-  } 
-  next()
-})
-
 
 // 회원가입;
 // 1. emaail 중복 검사
