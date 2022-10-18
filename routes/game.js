@@ -51,7 +51,7 @@ router.put("/update", verifyToken, async (req, res, next) => {
   console.log("PUT /update 진입");
   // console.log("req.headers : ", req.headers);
   const { gold, usedship, score } = req.headers;
-
+  console.log("req.header: ", req.headers);
   try {
     const oriGold = await User.findOne({
       where: { id: req.decoded.id },
@@ -60,11 +60,14 @@ router.put("/update", verifyToken, async (req, res, next) => {
 
     const resultGold = Number(oriGold.dataValues.gold) + Number(gold);
 
-    const user = await User.update(
+    await User.update(
       { gold: resultGold, currentShipImage: usedship },
-      // { whewre: { id: req.headers.userid } }
       { where: { id: req.decoded.id } }
     );
+
+    console.log("score : ", score);
+    console.log("resultgold : ", resultGold);
+    console.log("usedship : ", usedship);
 
     await Scoredata.create({
       nick: req.decoded.nick,
