@@ -12,7 +12,7 @@ exports.verifyToken = (req, res, next) => {
   try {
     console.log("middeleware 진입");
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
-    // console.log("req.decode : ", req.decoded);
+    console.log("req.decode : ", req.decoded);
     return next();
     // return res.status(200).json({
     //   message: "verifyToken success",
