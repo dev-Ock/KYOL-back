@@ -165,12 +165,13 @@ router.post("/purchase", verifyToken, async (req, res) => {
     const afterGold = parseInt(gold) - parseInt(selectedCost); // 우주선 구매 후 남은 gold
     console.log("afterGold : ", afterGold);
     console.log("typeof afterGold", typeof afterGold);
+    console.log("req.decoded.id : ",req.decoded.id)
     if (afterGold >= 0) {
-      await User.update({ where: { id: req.decoded.id } }, { gold: afterGold });
+      await User.update({ gold: afterGold,},{ where: { id: req.decoded.id } });
       await Spaceship.create({
         shipName: selectedShip,
         UserId: req.decoded.id,
-      });
+      }); 
       res.status(200).json({
         success: true,
         message: "purchase - success",
