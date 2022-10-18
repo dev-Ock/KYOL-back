@@ -49,7 +49,7 @@ router.get("/gear", verifyToken, async (req, res, next) => {
 // spaceship을 User테이블 currentShipImage 컬럼과 Scoredata usedShip 컬럼에 각각 update해야 한다. Scoredata usedShip은 점수와 함께 남길 기록용. 한 사용자가 score 기록을 여러 번 남길 수 있다. User의 currentShipImage는 게임할 때, 상점 갈 때 필요.
 router.put("/update", verifyToken, async (req, res, next) => {
   console.log("PUT /update 진입");
-  console.log("req.headers : ", req.headers);
+  // console.log("req.headers : ", req.headers);
   const { gold, usedship, score } = req.headers;
 
   try {
@@ -60,13 +60,14 @@ router.put("/update", verifyToken, async (req, res, next) => {
 
     const resultGold = Number(oriGold.dataValues.gold) + Number(gold);
 
-    await User.update(
+    const user = await User.update(
       { gold: resultGold, currentShipImage: usedship },
       // { whewre: { id: req.headers.userid } }
       { where: { id: req.decoded.id } }
     );
 
     await Scoredata.create({
+      nick: req.decoded.nick,
       score: score,
       usedShip: usedship,
       UserId: req.decoded.id,

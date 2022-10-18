@@ -98,7 +98,7 @@ router.delete("/auth-delete", verifyToken, async (req, res, next) => {
   try {
     // await User.destroy({ where: { id: req.headers.userid } });
     // const user = await User.findOne({ where: { id: req.decoded.id } });
-    await Scoredata.destroy({ where: { UserId: req.decoded.id } });
+    // await Scoredata.destroy({ where: { UserId: req.decoded.id } });
     await Spaceship.destroy({ where: { UserId: req.decoded.id } });
     await User.destroy({ where: { id: req.decoded.id } });
     return res.status(200).json({
