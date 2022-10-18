@@ -1,7 +1,7 @@
 const express = require("express");
 const { verifyToken } = require("./middlewares");
 const { User, Shipdata, Spaceship } = require("../models");
-const { sequelize } = require("../models");
+// const { sequelize } = require("../models");
 
 const router = express.Router();
 
@@ -151,27 +151,39 @@ shop에서 구매할 우주선(selectedShip)을 선택하면 사용자의 현재
 2. Spaceship테이블에는 내역 추가 (speed,bulletNumber는 front에 각 우주선에 대한 speed, bulletNumber 정보가 있으므로 DB에 저장할 필요 없음)
 */
 
-router.post("/purchase", verifyToken, async (req, res, next) => {
-  // const gold = User.findOne({ where: { id: req.headers.userid } });
-  const gold = await User.findOne({
-    where: { id: req.decoded.id },
-    attributes: ["gold"],
-  });
-
-  const { selectedShip, selectedCost } = req.body;
-  const afterGold = gold - selectedCost; // 우주선 구매 후 남은 gold
-  if (afterGold >= 0) {
-    await User.update({ where: { id: req.decoded.id } }, { gold: afterGold });
-    await Spaceship.create({ shipName: selectedShip, UserId: req.decoded.id });
-    res.status(200).json({
-      success: true,
-      message: "purchase - success",
+router.post("/purchase", verifyToken, async (req, res) => {
+  try {
+    // const gold = User.findOne({ where: { id: req.headers.userid } });
+    const goldData = await User.findOne({
+      where: { id: req.decoded.id },
+      attributes: ["gold"],
     });
-  } else {
-    res.status(400).json({
-      success: false,
-      message: "purchase - failure",
-    });
+    const gold = goldData.dataValues.gold;
+    console.log("gold: ", gold);
+    const { selectedShip, selectedCost } = req.body;
+    console.log("POST /purchase 진입: ", selectedCost, selectedShip);
+    const afterGold = parseInt(gold) - parseInt(selectedCost); // 우주선 구매 후 남은 gold
+    console.log("afterGold : ", afterGold);
+    console.log("typeof afterGold", typeof afterGold);
+    if (afterGold >= 0) {
+      await User.update({ where: { id: req.decoded.id } }, { gold: afterGold });
+      await Spaceship.create({
+        shipName: selectedShip,
+        UserId: req.decoded.id,
+      });
+      res.status(200).json({
+        success: true,
+        message: "purchase - success",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "purchase - failure",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
   }
 });
 
