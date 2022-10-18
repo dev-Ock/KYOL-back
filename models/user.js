@@ -51,8 +51,6 @@ module.exports = class User extends Sequelize.Model {
 
   static associate(db) {
     db.User.hasMany(db.Spaceship);
-    db.User.hasMany(db.Scoredata, {
-      onDelete: "cascade",
-    });
+    db.User.hasMany(db.Scoredata);
   }
 };
