@@ -21,7 +21,7 @@ module.exports = class User extends Sequelize.Model {
           allowNull: false,
           defaultValue: 100000,
         },
-        curentShipImage: {
+        currentShipImage: {
           type: Sequelize.STRING(100),
           allowNull: false,
           defaultValue: "rocket1.png",

@@ -66,13 +66,15 @@ router.put("/update", verifyToken, async (req, res, next) => {
       { where: { id: req.decoded.id } }
     );
 
-    console.log("score : ", realScore);
+    console.log("realscore : ", realScore);
     console.log("resultgold : ", resultGold);
     console.log("usedship : ", usedship);
+    console.log("req.decoded.nick : ", req.decoded.nick);
+    console.log("req.decoded.id : ", req.decoded.id);
 
     await Scoredata.create({
       nick: req.decoded.nick,
-      score: score,
+      score: realScore,
       usedShip: usedship,
       UserId: req.decoded.id,
     });
