@@ -1,8 +1,38 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const { verifyToken } = require("./middlewares");
 const { User, Spaceship, Scoredata } = require("../models");
 
 const router = express.Router();
+
+// mypage 페이지 들어가기 전 password 검사 페이지의 password-compare 
+router.post("/pw-compare", verifyToken, async(req,res,next)=>{
+  try{
+    console.log("POST /mypage/pw-compare 진입")
+    const {password} = req.body
+    console.log("password : ",password)
+    const exUser = await User.findOne({where:{id:req.decoded.id}})
+    if (!exUser) {
+      return res.status(401).json({
+        message: "no-user",
+      });
+    } else {
+      const result = await bcrypt.compare(password, exUser.password);
+      console.log("result : ",result)
+      if (!result) {
+        return res.status(401).json({
+          message: "compare-result-false",
+        })}else{
+          return res.status(200).json({
+            message: "compare-result-true"
+          })
+        };
+  }}catch(err){
+    console.error(err);
+    next(err);
+  }
+})
+
 
 /*
   프로필 : 
@@ -37,62 +67,79 @@ router.get("/", verifyToken, async (req, res, next) => {
   }
 });
 
-// 회원정보수정(user테이블 전체에서 nickname 중복되는 게 없다면,  password)
-router.put("/auth-update", verifyToken, async (req, res, next) => {
+// 닉네임 수정
+router.put("/nick-update", verifyToken, async (req, res, next) => {
   try {
-    console.log("PUT /auth/update 진입");
-    const { nick, password } = req.body;
+    console.log("PUT /mypage/nick-update 진입");
+    const {nick} = req.body;
     const sameNick = await User.findOne({ where: { nick: nick } });
-    // 입력한 nick이나 password가 있다면
-    if (nick || password) {
+
       // 입력한 nick이 있다면
       if (nick) {
         // 입력한 nick이 DB에 일치하는 것이 없다면
         if (!sameNick) {
           await User.update(
             { nick: nick },
-            // { where: { id: req.headers.userid } }
             { where: { id: req.decoded.id } }
           );
-        }
+          const user = await User.findOne(
+            { where: { id: req.decoded.id } },
+            { attribues: ["nick"] }
+          );
+          return res.status(201).json({
+            message: "nick-update-success",
+            data: user,
+            })}
         // 입력한 nick이 DB에 일치하는 것이 있다면
         else
           return res.status(400).json({
-            message: "unavailable nickname",
+            message: "unavailable nick",
           });
-      }
-      if (password) {
-        const newPassword = await bcrypt.hash(password, 12);
-        User.update(
-          {
-            password: newPassword,
-          },
-          // { where: { id: req.headers.userid } }
-          { where: { id: req.decoded.id } }
-        );
-      }
-      const user = await User.findOne(
-        { where: { id: req.decoded.id } },
-        { attribues: ["nick"] }
-      );
-      return res.status(201).json({
-        message: "update-success",
-        data: user,
-      });
-    }
-    // 입력한 nick이나 password가 없다면
-    else
+        }
+    // 입력한 nick이 없다면
+    else{
       return res.status(400).json({
-        message: "no nick & no password",
-      });
+        message: "no nick",
+      });}
   } catch (err) {
     console.error(err);
     return res.status(500).json({
-      message: "update-failure",
+      message: "nick-update-server-error",
     });
   }
 });
 
+// password 수정
+router.put("/pw-update", verifyToken, async (req, res, next) => {
+  try {
+    console.log("PUT /auth/update 진입");
+    const { password } = req.body;
+
+    // 입력한 password가 있다면
+    if (password) {
+      const newPassword = await bcrypt.hash(password, 12);
+      User.update(
+        {
+          password: newPassword,
+        },
+        { where: { id: req.decoded.id } }
+      );
+      return res.status(201).json({
+        message: "pw-update-success",
+      });
+    }else{
+      return res.status(400).json({
+        message: "no password",
+      });
+    }
+  }catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "pw-update-server-error",
+    });
+  }})
+
+  
 // 회원탈퇴
 router.delete("/auth-delete", verifyToken, async (req, res, next) => {
   try {
