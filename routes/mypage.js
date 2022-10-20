@@ -23,6 +23,7 @@ router.post("/pw-compare", verifyToken, async(req,res,next)=>{
         return res.status(401).json({
           message: "compare-result-false",
         })}else{
+          console.log("mypage 페이지 들어가기 전 password-compare 완료")
           return res.status(200).json({
             message: "compare-result-true"
           })
@@ -57,6 +58,7 @@ router.get("/", verifyToken, async (req, res, next) => {
         },
       ],
     });
+    console.log("프로필 정보 조회 완료")
     res.status(200).json({
       message: "get /mypage - success",
       user: profile,
@@ -86,6 +88,7 @@ router.put("/nick-update", verifyToken, async (req, res, next) => {
             { where: { id: req.decoded.id } },
             { attribues: ["nick"] }
           );
+          console.log("nick 수정 완료")
           return res.status(201).json({
             message: "nick-update-success",
             data: user,
@@ -112,7 +115,7 @@ router.put("/nick-update", verifyToken, async (req, res, next) => {
 // password 수정
 router.put("/pw-update", verifyToken, async (req, res, next) => {
   try {
-    console.log("PUT /auth/update 진입");
+    console.log("PUT /mypage/pw-update 진입");
     const { password } = req.body;
 
     // 입력한 password가 있다면
@@ -124,6 +127,7 @@ router.put("/pw-update", verifyToken, async (req, res, next) => {
         },
         { where: { id: req.decoded.id } }
       );
+      console.log("password 수정 완료")
       return res.status(201).json({
         message: "pw-update-success",
       });
@@ -148,6 +152,7 @@ router.delete("/auth-delete", verifyToken, async (req, res, next) => {
     // await Scoredata.destroy({ where: { UserId: req.decoded.id } });
     await Spaceship.destroy({ where: { UserId: req.decoded.id } });
     await User.destroy({ where: { id: req.decoded.id } });
+    console.log("회원탈퇴 완료")
     return res.status(200).json({
       message: "delete-success",
     });
