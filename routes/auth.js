@@ -79,7 +79,7 @@ router.post("/join", async (req, res, next) => {
       nick,
       password: hash,
     });
-    // 가입할 때 curentShipImage로 rocket1.png을 default로 받으므로 Spaceship 모델에 관계커리로 추가한다.
+    // 가입할 때 curentShipImage로 rocket0.png을 default로 받으므로 Spaceship 모델에 관계커리로 추가한다.
     const spaceship = await Spaceship.create({
       shipName: user.currentShipImage,
     });
