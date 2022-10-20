@@ -140,14 +140,4 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-// 로그아웃
-// router.get("/logout", (req, res) => {
-//   console.log(GET / auth / logout);
-//   req.logout();
-//   req.session.destroy();
-//   return res.status(200).json({
-//     message: "logout-success",
-//   });
-// });
-
 module.exports = router;
