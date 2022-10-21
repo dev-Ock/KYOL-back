@@ -35,9 +35,22 @@ router.post("/join/nick-check", async (req, res, next) => {
   const { nick } = req.body;
   try {
     console.log("POST /join/nick-check 진입");
+    console.log("nick : ",nick)
+    console.log("typeof nick : ",typeof nick)
+    if(!nick){
+      return res.status(400).json({
+        message: "no-nick"
+      })
+    }
+    let reg = /\s/g;
+    if(nick.match(reg)){
+      return res.status(400).json({
+        message: "nick-is-null"
+      })
+    }
     const exUser = await User.findOne({ where: { nick } });
     if (exUser) {
-      return res.status(303).json({
+      return res.status(400).json({
         message: "nick-check-failure-duplicated",
       });
     } else {
