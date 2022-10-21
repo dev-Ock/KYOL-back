@@ -137,10 +137,10 @@
 - mypage 들어가기 전 password 검사하는 페이지 생성
 - mypage nickname 수정 기능, password 수정 기능을 수정
 
-## 전체 기능 점검 (22.10.20)
+## 회원가입 기능 수정 및 전체 기능 점검 (22.10.20~21)
+- nick 공백 불허로 공백 검사 코드 추가
 - main 페이지
 - game 페이지
 - ranking 페이지
 - mypage 페이지
 - shop 페이지
-
