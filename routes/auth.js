@@ -42,8 +42,8 @@ router.post("/join/nick-check", async (req, res, next) => {
         message: "no-nick"
       })
     }
-    let reg = /\s/g;
-    if(nick.match(reg)){
+    let blank = /\s/g;
+    if(nick.match(blank)){
       return res.status(400).json({
         message: "nick-is-null"
       })

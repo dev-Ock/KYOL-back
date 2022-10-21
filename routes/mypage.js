@@ -84,6 +84,10 @@ router.put("/nick-update", verifyToken, async (req, res, next) => {
             { nick: nick },
             { where: { id: req.decoded.id } }
           );
+          await Scoredata.update(
+            { nick: nick },
+            { where: { userid: req.decoded.id } }
+          )
           const user = await User.findOne(
             { where: { id: req.decoded.id } },
             { attribues: ["nick"] }
