@@ -8,7 +8,7 @@ const router = express.Router();
 GET /game
 
 1. nick
-2. curentShipImage
+2. currentShipImage
 3. 보유하고 있는 우주선
 보내기
 
@@ -25,7 +25,7 @@ router.get("/gear", verifyToken, async (req, res, next) => {
     const user = await User.findOne({
       // where: { id: req.headers.userid },
       where: { id: req.decoded.id },
-      atttributes: ["nick", "curentShipImage"],
+      attributes: ["nick", "currentShipImage"],
       include: [
         {
           model: Spaceship,
