@@ -16,7 +16,13 @@ router.post("/pw-compare", verifyToken, async(req,res,next)=>{
       return res.status(401).json({
         message: "no-user",
       });
-    } else {
+    } 
+    if(!password){
+      return res.status(401).json({
+        message : "no-password"
+      })
+    }
+    else {
       const result = await bcrypt.compare(password, exUser.password);
       console.log("result : ",result)
       if (!result) {
