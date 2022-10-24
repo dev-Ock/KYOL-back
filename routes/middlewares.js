@@ -2,13 +2,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 exports.verifyToken = (req, res, next) => {
-  // console.log("middleeware req.headers.userid: ", req.headers.userid);
-  // console.log("req.headers : ", req.headers);
-  // console.log("req.body : ", req.body);
-  // console.log("req.decoded : ", req.decoded);
-  // console.log("req : ", req);
-  // console.log("req.decoded.id : ", req.decoded.id);
-  // console.log("req.headers.authorization : ", req.headers.authorization);
   try {
     console.log("middeleware 진입");
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
