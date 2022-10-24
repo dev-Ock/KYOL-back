@@ -6,16 +6,10 @@ const morgan = require("morgan");
 const session = require("express-session");
 const dotenv = require("dotenv");
 const cors = require("cors");
-
-// const DBConnection = require("./config/db");
-
+ 
 dotenv.config({ path: "./config/.env" });
 
-// DBConnection();
-
-// const indexRouter = require("./routes");
 const mainRouter = require("./routes/main");
-// const tokenRouter = require("./routes/token");
 const authRouter = require("./routes/auth");
 const shopRouter = require("./routes/shop");
 const rankingRouter = require("./routes/ranking");
@@ -26,8 +20,6 @@ const mypageRouter = require("./routes/mypage");
 
 const { sequelize } = require("./models");
 // const passportConfig = require("./passport");
-// const { isColString } = require("sequelize/types/lib/utils");
-// const { CLIENT_RENEG_LIMIT } = require("tls");
 
 const app = express();
 // passportConfig();
