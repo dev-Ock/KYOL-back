@@ -8,6 +8,7 @@ const router = express.Router();
 // 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
 router.get("/", verifyToken, async (req, res) => {
   console.log("req.decoded : ", req.decoded);
+
   try {
     console.log("GET /SHOP 진입");
     const user = await User.findOne({
@@ -28,6 +29,7 @@ router.get("/", verifyToken, async (req, res) => {
       where: { userid: req.decoded.id },
       attributes: ["shipName"],
     });
+    console.log("check1 : ", userShipData);
 
     // 로그인한 사용자의 보유한 우주선의 이름들
     const userShipName = [];
