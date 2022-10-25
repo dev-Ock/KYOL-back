@@ -7,16 +7,14 @@ const router = express.Router();
 
 // 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
 router.get("/", verifyToken, async (req, res) => {
-  // console.log("req.decoded : ", req.decoded);
+  console.log("req.decoded : ", req.decoded);
+
   try {
     console.log("GET /SHOP 진입");
-    // console.log("req.headers : ", req.headers);
-    // console.log("req.body : ", req.body);
-    // console.log("req.decoded : ", req.decoded);
     const user = await User.findOne({
       // where: { id: req.headers.userid },
       where: { id: req.decoded.id },
-      attributese: ["gold"],
+      attributes: ["gold"],
       include: [
         {
           model: Spaceship,
@@ -24,9 +22,6 @@ router.get("/", verifyToken, async (req, res) => {
         },
       ],
     });
-    // console.log("GET /shop user: ", user);
-    /////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////
 
     // 1. 보유하고 있는 우주선인지 확인을 통해 보유하고 있지 않아서 구매가능하면 true, 이미 보유하고 있으면 불가로 false
     // (1) 로그인한 사용자의 보유한 우주선의 이름들이 포함되어있는 array
@@ -34,6 +29,7 @@ router.get("/", verifyToken, async (req, res) => {
       where: { userid: req.decoded.id },
       attributes: ["shipName"],
     });
+    console.log("check1 : ", userShipData);
 
     // 로그인한 사용자의 보유한 우주선의 이름들
     const userShipName = [];
@@ -66,12 +62,6 @@ router.get("/", verifyToken, async (req, res) => {
         availableShip.push(false);
       }
     }
-
-    console.log("###############");
-    console.log(userShipName);
-    console.log(allShipName);
-    console.log("availableShip : ", availableShip); // value가 4개인지 확인하기
-    console.log("@@@@@@@@@@@@@");
 
     /////////////////////////////////////////////////////////////////////
 
@@ -165,13 +155,13 @@ router.post("/purchase", verifyToken, async (req, res) => {
     const afterGold = parseInt(gold) - parseInt(selectedCost); // 우주선 구매 후 남은 gold
     console.log("afterGold : ", afterGold);
     console.log("typeof afterGold", typeof afterGold);
-    console.log("req.decoded.id : ",req.decoded.id)
+    console.log("req.decoded.id : ", req.decoded.id);
     if (afterGold >= 0) {
-      await User.update({ gold: afterGold,},{ where: { id: req.decoded.id } });
+      await User.update({ gold: afterGold }, { where: { id: req.decoded.id } });
       await Spaceship.create({
         shipName: selectedShip,
         UserId: req.decoded.id,
-      }); 
+      });
       res.status(200).json({
         success: true,
         message: "purchase - success",
