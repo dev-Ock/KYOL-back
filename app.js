@@ -1,12 +1,11 @@
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-// const passport = require("passport");
 const morgan = require("morgan");
 const session = require("express-session");
 const dotenv = require("dotenv");
 const cors = require("cors");
- 
+
 dotenv.config({ path: "./config/.env" });
 
 const mainRouter = require("./routes/main");
@@ -16,17 +15,12 @@ const rankingRouter = require("./routes/ranking");
 const gameRouter = require("./routes/game");
 const mypageRouter = require("./routes/mypage");
 
-// const errorHandler = require("./routes/middlewares");
-
 const { sequelize } = require("./models");
-// const passportConfig = require("./passport");
 
 const app = express();
-// passportConfig();
 
 const PORT = process.env.PORT;
 app.set("port", PORT);
-// app.set("view engine", "html");
 
 sequelize
   .sync({ force: false })
@@ -59,27 +53,12 @@ app.use(
   })
 );
 
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// const versionOne = (routeName) => `/api/v2/${routeName}`;
-// app.use(versionOne("main"), mainRouter);
-// app.use(versionOne("auth"), authRouter);
-// app.use(versionOne("shop"), shopRouter);
-// app.use(versionOne("ranking"), rankingRouter);
-// app.use(versionOne("game"), gameRouter);
-// app.use(versionOne("mypage"), mypageRouter);
-
-// app.use("/", indexRouter);
 app.use("/main", mainRouter);
-// app.use("/token", tokenRouter);
 app.use("/auth", authRouter);
 app.use("/game", gameRouter);
 app.use("/mypage", mypageRouter);
 app.use("/ranking", rankingRouter);
 app.use("/shop", shopRouter);
-
-// app.use(errorHandler);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
@@ -93,14 +72,6 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 });
 
-// app.listen(PORT, () => {
-//   console.log(
-//     // `We are live on ${process.env.VUE_APP_API} mode on port ${PORT}`.yellow.bold
-//     "hello"
-//   );
-// });
-
-// const server =
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 대기중");
 });
@@ -108,6 +79,4 @@ app.listen(app.get("port"), () => {
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
   console.log(`Error: ${err.message}`.red);
-  // Close server & exit process
-  // server.close(() => process.exit(1));
 });
