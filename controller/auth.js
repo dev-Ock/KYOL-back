@@ -1,4 +1,3 @@
-const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
@@ -7,9 +6,9 @@ const { Spaceship } = require("../models");
 // 회원가입;
 // 1. email 중복 검사
 exports.joinServiceEmailCheck = async (req, res, next) => {
+  console.log("POST /auth/join/email-check 진입");
   const { email } = req.body;
   try {
-    console.log("POST /join/email-check 진입");
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
       return res.status(303).json({
@@ -30,6 +29,7 @@ exports.joinServiceEmailCheck = async (req, res, next) => {
 
 // 2. nick 중복 검사
 exports.joinServiceNickCheck = async (req, res, next) => {
+  console.log("POST /auth/join/nick-check 진입");
   const { nick } = req.body;
   try {
     if (!nick) {
@@ -65,7 +65,7 @@ exports.joinServiceNickCheck = async (req, res, next) => {
 exports.joinService = async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
-    console.log("POST /join 최종 진입");
+    console.log("POST /auth/join 최종 진입");
     const exUser1 = await User.findOne({ where: { email } });
     const exUser2 = await User.findOne({ where: { nick } });
     if (exUser1) {
@@ -103,6 +103,7 @@ exports.joinService = async (req, res, next) => {
 
 // 로그인
 exports.loginService = async (req, res, next) => {
+  console.log("POST /auth/login 진입");
   const { email, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
