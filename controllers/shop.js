@@ -131,9 +131,9 @@ exports.shop = async (req, res) => {
       data: { user, availableGold, availableShip, availableResult },
       message: 'GET /shop - success',
     });
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -177,8 +177,8 @@ exports.purchase = async (req, res) => {
         message: 'purchase - failure',
       });
     }
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
