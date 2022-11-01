@@ -11,9 +11,9 @@ exports.navbar = async (req, res, next) => {
       data: user,
       message: 'user 조회 완료',
     });
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -24,8 +24,8 @@ exports.main = async (req, res, next) => {
       where: { id: req.headers.userid || null },
     });
     res.status(200).json({ success: true, data: user });
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
