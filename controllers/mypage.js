@@ -26,9 +26,9 @@ exports.pwcompare = async (req, res, next) => {
         });
       }
     }
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -60,9 +60,9 @@ exports.profile = async (req, res, next) => {
       message: 'get /mypage - success',
       user: profile,
     });
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -104,11 +104,9 @@ exports.nickupdate = async (req, res, next) => {
         message: 'no nick',
       });
     }
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: 'nick-update-server-error',
-    });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -136,11 +134,9 @@ exports.pwupdate = async (req, res, next) => {
         message: 'no password',
       });
     }
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: 'pw-update-server-error',
-    });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -156,10 +152,8 @@ exports.authdelete = async (req, res, next) => {
     return res.status(200).json({
       message: 'delete-success',
     });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      message: 'delete-failure',
-    });
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };

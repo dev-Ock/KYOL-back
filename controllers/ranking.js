@@ -22,8 +22,8 @@ exports.ranking = async (req, res, next) => {
     res
       .status(200)
       .json({ success: true, data: result, message: 'get /ranking - success' });
-  } catch (err) {
-    console.error(err);
-    next(err);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
