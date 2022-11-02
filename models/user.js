@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
 module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
@@ -7,6 +7,11 @@ module.exports = class User extends Sequelize.Model {
         email: {
           type: Sequelize.STRING(40),
           allowNull: false,
+        },
+        type: {
+          type: Sequelize.ENUM('free', 'premium'),
+          allowNull: false,
+          defaultValue: 'premium',
         },
         nick: {
           type: Sequelize.STRING(100),
@@ -24,12 +29,12 @@ module.exports = class User extends Sequelize.Model {
         currentShipImage: {
           type: Sequelize.STRING(100),
           allowNull: false,
-          defaultValue: "rocket0.png",
+          defaultValue: 'rocket0.png',
         },
         provider: {
           type: Sequelize.STRING(10),
           allowNull: false,
-          defaultValue: "local",
+          defaultValue: 'local',
         },
         snsId: {
           type: Sequelize.STRING(30),
@@ -40,11 +45,11 @@ module.exports = class User extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "User",
-        tableName: "Users",
+        modelName: 'User',
+        tableName: 'Users',
         paranoid: true,
-        charset: "utf8",
-        collate: "utf8_general_ci",
+        charset: 'utf8',
+        collate: 'utf8_general_ci',
       }
     );
   }
