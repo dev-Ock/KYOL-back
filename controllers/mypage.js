@@ -119,16 +119,22 @@ exports.pwupdate = async (req, res, next) => {
     // 입력한 password가 있다면
     if (password) {
       const newPassword = await bcrypt.hash(password, 12);
-      User.update(
-        {
-          password: newPassword,
-        },
-        { where: { id: req.decoded.id } }
-      );
-      console.log('password 수정 완료');
-      return res.status(201).json({
-        message: 'pw-update-success',
-      });
+      if (newPassword) {
+        User.update(
+          {
+            password: newPassword,
+          },
+          { where: { id: req.decoded.id } }
+        );
+        console.log('password 수정 완료');
+        return res.status(201).json({
+          message: 'pw-update-success',
+        });
+      } else {
+        return res.status(400).json({
+          message: 'pw-update-failure',
+        });
+      }
     } else {
       return res.status(400).json({
         message: 'no password',
