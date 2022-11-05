@@ -1,3 +1,4 @@
+const { resStatus } = require('../lib/responseStatus');
 const { User, Shipdata, Spaceship } = require('../models');
 
 // 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
@@ -126,10 +127,10 @@ exports.shop = async (req, res) => {
     console.log('11@@@@@@@@@@@@@');
     /////////////////////////////////////////////////////////////////////
 
-    res.status(200).json({
-      success: true,
+    res.status(resStatus.success.code).json({
+      // 200
       data: { user, availableGold, availableShip, availableResult },
-      message: 'GET /shop - success',
+      message: resStatus.success.message, // success
     });
   } catch (error) {
     console.error(error);
@@ -154,27 +155,27 @@ exports.purchase = async (req, res) => {
       attributes: ['gold'],
     });
     const gold = goldData.dataValues.gold;
-    console.log('gold: ', gold);
+    // console.log('gold: ', gold);
     const { selectedShip, selectedCost } = req.body;
     console.log('POST /purchase 진입: ', selectedCost, selectedShip);
     const afterGold = parseInt(gold) - parseInt(selectedCost); // 우주선 구매 후 남은 gold
-    console.log('afterGold : ', afterGold);
-    console.log('typeof afterGold', typeof afterGold);
-    console.log('req.decoded.id : ', req.decoded.id);
+    // console.log('afterGold : ', afterGold);
+    // console.log('typeof afterGold', typeof afterGold);
+    // console.log('req.decoded.id : ', req.decoded.id);
     if (afterGold >= 0) {
       await User.update({ gold: afterGold }, { where: { id: req.decoded.id } });
       await Spaceship.create({
         shipName: selectedShip,
         UserId: req.decoded.id,
       });
-      res.status(200).json({
-        success: true,
-        message: 'purchase - success',
+      res.status(resStatus.success.code).json({
+        // 200
+        message: resStatus.success.message, // success
       });
     } else {
-      res.status(400).json({
-        success: false,
-        message: 'purchase - failure',
+      res.status(resStatus.invalidg.code).json({
+        // 404
+        message: resStatus.invalidg.message, // failure - gold shortage
       });
     }
   } catch (error) {

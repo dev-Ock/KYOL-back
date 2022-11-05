@@ -1,3 +1,4 @@
+const { resStatus } = require('../lib/responseStatus');
 const { User, Spaceship, Scoredata } = require('../models');
 
 exports.gearPage = async (req, res, next) => {
@@ -15,10 +16,11 @@ exports.gearPage = async (req, res, next) => {
       ],
     });
 
-    res.status(200).json({
+    res.status(resStatus.success.code).json({
+      // 200
       success: true,
       data: user,
-      message: 'get /game - success',
+      message: resStatus.success.message, // success
     });
   } catch (error) {
     console.error(error);
@@ -56,8 +58,9 @@ exports.gameResultUpdate = async (req, res, next) => {
       UserId: req.decoded.id,
     });
 
-    res.status(200).json({
-      message: 'game-update-success',
+    res.status(resStatus.success.code).json({
+      // 200
+      message: resStatus.success.message, // success
     });
   } catch (error) {
     console.error(error);
