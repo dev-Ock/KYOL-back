@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { resStatus } = require('../lib/responseStatus');
 const { User, Spaceship } = require('../models');
 
 // 회원가입;
@@ -10,12 +11,14 @@ exports.joinServiceEmailCheck = async (req, res, next) => {
   try {
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
-      return res.status(303).json({
-        message: 'email-check-failure-duplicated',
+      return res.status(resStatus.invalide.code).json({
+        // 404
+        message: resStatus.invalide.message, // email-check-failure-duplicated
       });
     } else {
-      return res.status(202).json({
-        message: 'email-check-success',
+      return res.status(resStatus.success.code).json({
+        // 200
+        message: resStatus.success.message, // email-check-success
       });
     }
   } catch (error) {
@@ -30,24 +33,28 @@ exports.joinServiceNickCheck = async (req, res, next) => {
   const { nick } = req.body;
   try {
     if (!nick) {
-      return res.status(400).json({
-        message: 'no-nick',
+      return res.status(resStatus.nothing.code).json({
+        // 404
+        message: resStatus.nothing.message, // no-nick
       });
     }
     let blank = /\s/g;
     if (nick.match(blank)) {
-      return res.status(400).json({
-        message: 'nick-is-null',
+      return res.status(resStatus.blank.code).json({
+        // 404
+        message: resStatus.blank.message, // nick-is-null
       });
     }
     const exUser = await User.findOne({ where: { nick } });
     if (exUser) {
-      return res.status(400).json({
-        message: 'nick-check-failure-duplicated',
+      return res.status(resStatus.invalidn.code).json({
+        // 404
+        message: resStatus.invalidn.message, // nick-check-failure-duplicated
       });
     } else {
-      return res.status(202).json({
-        message: 'nick-check-succeess',
+      return res.status(resStatus.success.code).json({
+        // 200
+        message: resStatus.success.message, // nick-check-succeess
       });
     }
   } catch (error) {
@@ -64,13 +71,15 @@ exports.joinService = async (req, res, next) => {
     const exUser1 = await User.findOne({ where: { email } });
     const exUser2 = await User.findOne({ where: { nick } });
     if (exUser1) {
-      return res.status(303).json({
-        message: 'email-check-failure-duplicated',
+      return res.status(resStatus.invalide.code).json({
+        // 404
+        message: resStatus.invalide.message, // email-check-failure-duplicated
       });
     }
     if (exUser2) {
-      return res.status(303).json({
-        message: 'nick-check-failure-duplicated',
+      return res.status(resStatus.invalidn.code).json({
+        // 404
+        message: resStatus.invalidn.message, // nick-check-failure-duplicated
       });
     }
 
@@ -85,8 +94,9 @@ exports.joinService = async (req, res, next) => {
       shipName: user.currentShipImage,
     });
     await user.addSpaceship(spaceship);
-    return res.status(200).json({
-      message: 'join-success',
+    return res.status(resStatus.success.code).json({
+      // 200
+      message: resStatus.success.message, // join-success
     });
   } catch (error) {
     console.error(error);
@@ -101,15 +111,16 @@ exports.loginService = async (req, res, next) => {
   try {
     const exUser = await User.findOne({ where: { email } });
     if (!exUser) {
-      return res.status(401).json({
-        // 401 Unauthorized(권한 없음)
-        message: 'login-failure',
+      return res.status(resStatus.invalide.code).json({
+        // 404
+        message: resStatus.invalide.message, // login-failure
       });
     } else {
       const result = await bcrypt.compare(password, exUser.password);
       if (!result) {
-        return res.status(401).json({
-          message: 'login-failure',
+        return res.status(resStatus.invalidp.code).json({
+          // 404
+          message: resStatus.invalidp.message, // login-failure
         });
       } else {
         const token = jwt.sign(
@@ -125,8 +136,9 @@ exports.loginService = async (req, res, next) => {
             issuer: 'KYOL',
           }
         );
-        return res.status(201).json({
-          message: '토큰이 발급되었습니다',
+        return res.status(resStatus.success.code).json({
+          // 200
+          message: resStatus.success.message, // token issuance
           token,
           user: exUser,
         });
