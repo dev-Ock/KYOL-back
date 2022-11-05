@@ -1,5 +1,6 @@
 const { sequelize } = require('../models');
 const { Scoredata } = require('../models');
+const { resStatus } = require('../lib/responseStatus');
 
 // 랭킹을 조회하면 랭킹표에 나타낼 점수와 유저의 아이콘을 보여준다.
 // => DB 를 조회해서 해당 값을 불러온다 (Scoredata, User)
@@ -20,8 +21,8 @@ exports.ranking = async (req, res, next) => {
     console.log(weeklyRanking);
     const result = { topRanking, weeklyRanking };
     res
-      .status(200)
-      .json({ success: true, data: result, message: 'get /ranking - success' });
+      .status(resStatus.success.code) // 200
+      .json({ data: result, message: resStatus.success.message }); // success
   } catch (error) {
     console.error(error);
     next(error);
