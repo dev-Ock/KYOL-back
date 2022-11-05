@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { resStatus } = require('../lib/responseStatus');
 const { User, Spaceship, Scoredata } = require('../models');
 
 // mypage 페이지 들어가기 전 password 검사 페이지의 password-compare
@@ -9,20 +10,23 @@ exports.pwcompare = async (req, res, next) => {
     console.log('password : ', password);
     const exUser = await User.findOne({ where: { id: req.decoded.id } });
     if (!exUser) {
-      return res.status(401).json({
-        message: 'no-user',
+      return res.status(resStatus.invalidu.code).json({
+        // 404
+        message: resStatus.invalidu.message, // no-user
       });
     } else {
       const result = await bcrypt.compare(password, exUser.password);
       console.log('result : ', result);
       if (!result) {
-        return res.status(401).json({
-          message: 'compare-result-false',
+        return res.status(resStatus.invalidp.code).json({
+          // 404
+          message: resStatus.invalidp.message, // compare-result-false
         });
       } else {
         console.log('mypage 페이지 들어가기 전 password-compare 완료');
-        return res.status(200).json({
-          message: 'compare-result-true',
+        return res.status(resStatus.success.code).json({
+          // 200
+          message: resStatus.success.message, // compare-result-true
         });
       }
     }
@@ -56,8 +60,9 @@ exports.profile = async (req, res, next) => {
       ],
     });
     console.log('프로필 정보 조회 완료');
-    res.status(200).json({
-      message: 'get /mypage - success',
+    res.status(resStatus.success.code).json({
+      // 200
+      message: resStatus.success.message, // success
       user: profile,
     });
   } catch (error) {
@@ -87,21 +92,24 @@ exports.nickupdate = async (req, res, next) => {
           { attribues: ['nick'] }
         );
         console.log('nick 수정 완료');
-        return res.status(201).json({
-          message: 'nick-update-success',
+        return res.status(resStatus.success.code).json({
+          // 200
+          message: resStatus.success.message, // nick-update-success
           data: user,
         });
       }
       // 입력한 nick이 DB에 일치하는 것이 있다면
       else
-        return res.status(400).json({
-          message: 'unavailable nick',
+        return res.status(resStatus.invalidn.code).json({
+          // 404
+          message: resStatus.invalidn.message, // unavailable nick
         });
     }
     // 입력한 nick이 없다면
     else {
-      return res.status(400).json({
-        message: 'no nick',
+      return res.status(resStatus.nothing.code).json({
+        // 404
+        message: resStatus.nothing.message, // no nick
       });
     }
   } catch (error) {
@@ -127,17 +135,20 @@ exports.pwupdate = async (req, res, next) => {
           { where: { id: req.decoded.id } }
         );
         console.log('password 수정 완료');
-        return res.status(201).json({
-          message: 'pw-update-success',
+        return res.status(resStatus.success.code).json({
+          // 201
+          message: resStatus.success.message, // pw-update-success
         });
       } else {
-        return res.status(400).json({
-          message: 'pw-update-failure',
+        return res.status(resStatus.invalidp.code).json({
+          // 404
+          message: resStatus.invalidp.message, // pw-update-failure
         });
       }
     } else {
-      return res.status(400).json({
-        message: 'no password',
+      return res.status(resStatus.nothing.code).json({
+        // 404
+        message: resStatus.nothing.message, // no password
       });
     }
   } catch (error) {
@@ -149,14 +160,12 @@ exports.pwupdate = async (req, res, next) => {
 // 회원탈퇴
 exports.authdelete = async (req, res, next) => {
   try {
-    // await User.destroy({ where: { id: req.headers.userid } });
-    // const user = await User.findOne({ where: { id: req.decoded.id } });
-    // await Scoredata.destroy({ where: { UserId: req.decoded.id } });
     await Spaceship.destroy({ where: { UserId: req.decoded.id } });
     await User.destroy({ where: { id: req.decoded.id } });
     console.log('회원탈퇴 완료');
-    return res.status(200).json({
-      message: 'delete-success',
+    return res.status(resStatus.success.code).json({
+      // 200
+      message: resStatus.success.message, // success
     });
   } catch (error) {
     console.error(error);

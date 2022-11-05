@@ -1,3 +1,4 @@
+const { resStatus } = require('../lib/responseStatus');
 const { User } = require('../models');
 
 exports.navbar = async (req, res, next) => {
@@ -6,10 +7,10 @@ exports.navbar = async (req, res, next) => {
     const user = await User.findOne({
       where: { id: req.headers.userid },
     });
-    res.status(200).json({
-      success: true,
+    res.status(resStatus.success.code).json({
+      // 200
       data: user,
-      message: 'user 조회 완료',
+      message: resStatus.success.message, // success
     });
   } catch (error) {
     console.error(error);
@@ -23,7 +24,9 @@ exports.main = async (req, res, next) => {
     const user = await User.findOne({
       where: { id: req.headers.userid || null },
     });
-    res.status(200).json({ success: true, data: user });
+    res
+      .status(resStatus.success.code) // 200
+      .json({ data: user, message: resStatus.success.message }); // success
   } catch (error) {
     console.error(error);
     next(error);
