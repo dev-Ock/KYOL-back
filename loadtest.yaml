@@ -1,0 +1,125 @@
+# yaml 형식 loadtest
+# https://www.artillery.io/docs/guides/guides/http-reference 참고
+
+config:
+  target: "http://localhost:3000"
+  phases:
+    # - duration: 20
+    #   arrivalRate: 10
+    - duration: 60
+      arrivalRate: 30
+
+# before:
+#   flow:
+#     - log: 'Get auth token'
+#     - post:
+#         url: '/auth/login'
+#         json:
+#           email: 'testtest@gmail.com'
+#           password: 'testloadtest!1'
+#         # capture:
+#         #   json: '$.token'
+#         #   as: 'token'
+
+scenarios:
+  - flow:
+      - get:
+          url: "/main"
+      - get:
+          url: "/main/navbar"
+          headers:
+            userid: 144
+      - post:
+          url: "/auth/join/email-check"
+          json:
+            email: "testtest@gmail.com"
+      - post:
+          url: "/auth/join/nick-check"
+          json:
+            nick: "testnicktest"
+      - post:
+          url: "/auth/join"
+          json:
+            email: "testtest@gmail.com"
+            nick: "testnicktest"
+            password: "testloadtest!1"
+      - post:
+          url: "/auth/login"
+          json:
+            email: "testtest@gmail.com"
+            password: "testloadtest!1"
+            id: 144
+            type: "premium"
+            nick: "testnicktest"
+          capture:
+            json: "$.token"
+            as: "token"
+      - get:
+          url: "/main"
+      - get:
+          url: "/main/navbar"
+          headers:
+            userid: 144
+      - get:
+          url: "/shop"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - get:
+          url: "/main/navbar"
+          headers:
+            userid: 144
+      - post:
+          url: "/shop/purchase"
+          json:
+            selectedShip: "rocket3.png"
+            selectedCost: 10000
+          headers:
+            authorization: "Bearer {{ token }}"
+      - get:
+          url: "/main/navbar"
+          headers:
+            userid: 144
+      - get:
+          url: "/ranking"
+      - post:
+          url: "/mypage/pw-compare"
+          json:
+            password: "testloadtest!1"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - get:
+          url: "/mypage"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - get:
+          url: "/main/navbar"
+          headers:
+            userid: 144
+      - put:
+          url: "/mypage/nick-update"
+          json:
+            nick: "testnick2test"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - put:
+          url: "/mypage/pw-update"
+          json:
+            password: "testloadtest!2"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - get:
+          url: "/game/gear"
+          headers:
+            authorization: "Bearer {{ token }}"
+          # type: 'premium'
+      - put:
+          url: "/game/update"
+          headers:
+            authorization: "Bearer {{ token }}"
+            gold: 3000
+            score: 30000
+            usedShip: "rocket0.png"
+      - get:
+          url: "/main/navbar"
+          headers:
+            userid: 144
