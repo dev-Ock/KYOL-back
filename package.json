@@ -4,8 +4,8 @@
   "description": "shootingGame",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app",
-    "test": "jest"
+    "start": "nodemon server",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "author": "KYOL",
   "license": "ISC",
