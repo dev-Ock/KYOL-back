@@ -1,11 +1,11 @@
-const { resStatus } = require('../lib/responseStatus');
-const { User } = require('../models');
+const { resStatus } = require("../lib/responseStatus");
+const { User } = require("../models");
 
 exports.navbar = async (req, res, next) => {
   try {
-    console.log('GET /main/navbar 진입');
+    console.log("GET /main/navbar 진입");
     const user = await User.findOne({
-      where: { id: req.headers.userid },
+      where: { id: req.headers.userid || null },
     });
     res.status(resStatus.success.code).json({
       // 200
@@ -20,7 +20,7 @@ exports.navbar = async (req, res, next) => {
 
 exports.main = async (req, res, next) => {
   try {
-    console.log('GET /main 진입');
+    console.log("GET /main 진입");
     const user = await User.findOne({
       where: { id: req.headers.userid || null },
     });
