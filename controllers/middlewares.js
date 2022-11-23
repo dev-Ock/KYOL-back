@@ -8,6 +8,7 @@ const router = express.Router();
 // token 유효성 검사
 exports.verifyToken = (req, res, next) => {
   try {
+    console.log(`token : ${req.headers.authorization}입니다`);
     // console.log("middeleware 진입");
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
     // console.log("req.decode : ", req.decoded);
