@@ -1,12 +1,12 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { resStatus } = require('../lib/responseStatus');
-const { User, Spaceship } = require('../models');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { resStatus } = require("../lib/responseStatus");
+const { User, Spaceship } = require("../models");
 
 // 회원가입;
 // 1. email 중복 검사
 exports.joinServiceEmailCheck = async (req, res, next) => {
-  console.log('POST /auth/join/email-check 진입');
+  console.log("POST /auth/join/email-check 진입");
   const { email } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
@@ -29,7 +29,7 @@ exports.joinServiceEmailCheck = async (req, res, next) => {
 
 // 2. nick 중복 검사
 exports.joinServiceNickCheck = async (req, res, next) => {
-  console.log('POST /auth/join/nick-check 진입');
+  console.log("POST /auth/join/nick-check 진입");
   const { nick } = req.body;
   try {
     if (!nick) {
@@ -67,7 +67,7 @@ exports.joinServiceNickCheck = async (req, res, next) => {
 exports.joinService = async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
-    console.log('POST /auth/join 최종 진입');
+    console.log("POST /auth/join 최종 진입");
     const exUser1 = await User.findOne({ where: { email } });
     const exUser2 = await User.findOne({ where: { nick } });
     if (exUser1) {
@@ -106,7 +106,8 @@ exports.joinService = async (req, res, next) => {
 
 // 로그인
 exports.loginService = async (req, res, next) => {
-  console.log('POST /auth/login 진입');
+  console.log("POST /auth/login 진입");
+  console.log(req.body);
   const { email, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
@@ -132,13 +133,13 @@ exports.loginService = async (req, res, next) => {
           },
           process.env.JWT_SECRET,
           {
-            expiresIn: '6000000m',
-            issuer: 'KYOL',
+            expiresIn: "6000000m",
+            issuer: "KYOL",
           }
         );
         return res.status(resStatus.success.code).json({
           // 200
-          message: resStatus.success.message, // token issuance
+          message: resStatus.success.message, // success
           token,
           user: exUser,
         });
