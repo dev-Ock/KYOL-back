@@ -57,5 +57,8 @@ module.exports = class User extends Sequelize.Model {
   static associate(db) {
     db.User.hasMany(db.Spaceship);
     db.User.hasMany(db.Scoredata);
+    db.User.hasMany(db.Post);
+    db.User.hasMany(db.Postlike);
+    db.User.hasMany(db.Comment);
   }
 };
