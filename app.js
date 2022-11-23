@@ -19,6 +19,7 @@ const shopRouter = require("./routes/shop");
 const rankingRouter = require("./routes/ranking");
 const gameRouter = require("./routes/game");
 const mypageRouter = require("./routes/mypage");
+const communityRouter = require("./routes/community");
 
 const { sequelize } = require("./models");
 
@@ -76,6 +77,7 @@ app.use("/ranking", rankingRouter);
 app.use("/mypage", mypageRouter);
 app.use("/game", gameRouter);
 app.use("/shop", shopRouter);
+app.use("/community", communityRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
