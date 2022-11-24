@@ -19,10 +19,12 @@ module.exports = class Post extends Sequelize.Model {
         count: {
           type: Sequelize.INTEGER(40),
           allowNull: false,
+          defaultValue: 0,
         },
         like: {
           type: Sequelize.INTEGER(40),
           allowNull: false,
+          defaultValue: 0,
         },
       },
       {
