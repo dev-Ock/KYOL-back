@@ -33,9 +33,9 @@ exports.joinServiceNickCheck = async (req, res, next) => {
   const { nick } = req.body;
   try {
     if (!nick) {
-      return res.status(resStatus.nothing.code).json({
+      return res.status(resStatus.notenough.code).json({
         // 404
-        message: resStatus.nothing.message, // no-nick
+        message: resStatus.notenough.message, // no-nick
       });
     }
     let blank = /\s/g;
