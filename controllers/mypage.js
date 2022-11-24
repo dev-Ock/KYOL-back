@@ -107,9 +107,9 @@ exports.nickupdate = async (req, res, next) => {
     }
     // 입력한 nick이 없다면
     else {
-      return res.status(resStatus.nothing.code).json({
+      return res.status(resStatus.notenough.code).json({
         // 404
-        message: resStatus.nothing.message, // no nick
+        message: resStatus.notenough.message, // no nick
       });
     }
   } catch (error) {
@@ -146,9 +146,9 @@ exports.pwupdate = async (req, res, next) => {
         });
       }
     } else {
-      return res.status(resStatus.nothing.code).json({
+      return res.status(resStatus.notenough.code).json({
         // 404
-        message: resStatus.nothing.message, // no password
+        message: resStatus.notenough.message, // no password
       });
     }
   } catch (error) {
