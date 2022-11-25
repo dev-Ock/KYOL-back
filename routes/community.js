@@ -15,6 +15,6 @@ router.get("/list", wholeBoard);
 router.get("/list/selected-user", selectedUserBoard);
 router.get("/list/some-nicks", someNicksBoard);
 router.get("/list/some-titles", someTitlesBoard);
-router.post("/post/write", verifyToken, writePost);
+router.post("/post/add", verifyToken, writePost);
 
 module.exports = router;
