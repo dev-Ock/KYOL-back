@@ -1,5 +1,6 @@
+// const { response, resStatus } = require("../lib/responseStatus"); // response 라는 함수를 만들었는데 confirm 받고 사용여부 결정하기★★★
 const { resStatus } = require("../lib/responseStatus");
-const { Post, User } = require("../models");
+const { Post, User, Comment, Recomment, PostLike } = require("../models");
 
 // 전체 게시글 조회
 exports.wholeBoard = async (req, res, next) => {
@@ -47,7 +48,6 @@ exports.someNicksBoard = async (req, res, next) => {
         arr.push(nick);
       }
     }
-
     const post = await Post.findAll({
       where: { nick: arr },
     });
@@ -94,7 +94,13 @@ exports.writePost = async (req, res, next) => {
   try {
     console.log("POST /community/post/write 진입");
     const { title, content } = req.body;
-    if (title !== null && content !== null) {
+    // title이나 content가 없다면
+    if (title == null || content == null) {
+      res.status(resStatus.notenough.code).json({
+        meessage: resStatus.notenough.message,
+      });
+    } else {
+      // 전제조건들을 만족하면
       await Post.create({
         title: title,
         content: content,
@@ -104,10 +110,242 @@ exports.writePost = async (req, res, next) => {
       res.status(resStatus.success.code).json({
         meessage: resStatus.success.message,
       });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 게시글 수정 페이지 열 때
+exports.beforeUpdatePost = async (req, res, next) => {
+  try {
+    console.log("POST /community/post/before-update/:PostId 진입");
+    const post = await Post.findOne({
+      where: { id: parseInt(req.params.PostId, 10) },
+    });
+
+    // post가 존재하지 않는다면
+    if (!post[0]) {
     } else {
+      const UserId = post.dataValues.UserId;
+      // 로그인한 회원과 해당 게시글의 작성자가 불일치
+      if (UserId !== req.decoded.id) {
+        res.status(resStatus.different.code).json({
+          meessage: resStatus.different.message,
+        });
+      } else {
+        // 전제조건들을 만족하면
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+          data: { post },
+        });
+        // response(res, resStatus.success, {post}); // res 보낼 세 줄을 한 줄로 줄이는 함수 만듬
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 게시글 수정 적용하기
+exports.afterUpdatePost = async (req, res, next) => {
+  try {
+    console.log("POST /community/post/after-update/:PostId 진입");
+    const PostId = parseInt(req.params.PostId, 10);
+    const post = await Post.findOne({
+      where: { id: PostId },
+      attributes: ["UserId"],
+    });
+    const { title, content } = req.body;
+    // 수정할 title, content 둘 중 하나조차 없는 경우
+    if (!title || !content) {
       res.status(resStatus.notenough.code).json({
         meessage: resStatus.notenough.message,
       });
+    } else {
+      // PostId가 post 테이블에 없으면
+      if (!post[0]) {
+        res.status(resStatus.invalidi.code).json({
+          meessage: resStatus.invalidi.message,
+        });
+      } else {
+        const UserId = post.dataValues.UserId;
+        // 로그인한 회원과 해당 게시글의 작성자가 불일치
+        if (UserId !== req.decoded.id) {
+          res.status(resStatus.different.code).json({
+            meessage: resStatus.different.message,
+          });
+        } else {
+          // 전제조건들을 만족하면
+          const post = await Post.update(
+            { title: title, content: content },
+            {
+              where: { id: PostId },
+            }
+          );
+          res.status(resStatus.success.code).json({
+            meessage: resStatus.success.message,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 게시글 삭제
+exports.deletePost = async (req, res, next) => {
+  try {
+    console.log("POST /community/post/delete/:PostId 진입");
+    const PostId = parseInt(req.params.PostId, 10);
+    // console.log(PostId);
+    const post = await Post.findOne({
+      where: { id: PostId },
+    });
+    // console.log(post);
+    if (!post[0]) {
+      // PostId가 post 테이블에 없으면
+      res.status(resStatus.invalidi.code).json({
+        meessage: resStatus.invalidi.message,
+      });
+    } else {
+      const UserId = post.dataValues.UserId;
+      // 로그인한 회원과 해당 게시글의 작성자가 불일치
+      if (UserId !== req.decoded.id) {
+        res.status(resStatus.different.code).json({
+          meessage: resStatus.different.message,
+        });
+      } else {
+        // 전제조건들을 만족하면
+        await PostLike.destroy({ where: { PostId: PostId } });
+        await Recomment.destroy({ where: { PostId: PostId } });
+        await Comment.destroy({ where: { PostId: PostId } });
+        await Post.destroy({ where: { id: PostId } });
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 댓글 추가
+exports.addComment = async (req, res, next) => {
+  try {
+    console.log("POST /community/comment/add/:PostId 진입");
+    const { reply } = req.body;
+    // reply가 없는 경우
+    if (!reply) {
+      res.status(resStatus.notenough.code).json({
+        meessage: resStatus.notenough.message,
+      });
+    } else {
+      const PostId = parseInt(req.params.PostId, 10);
+      const post = await Post.findOne({
+        where: { id: PostId },
+      });
+      // post가 없는 경우
+      if (!post[0]) {
+        res.status(resStatus.invalidi.code).json({
+          meessage: resStatus.invalidi.message,
+        });
+      } else {
+        // 전제조건들을 만족하면
+        const comment = await Comment.create({
+          UserId: req.decoded.id,
+          reply: reply,
+        });
+        await post.addComment(comment);
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 댓글 수정
+exports.updateComment = async (req, res, next) => {
+  try {
+    console.log("POST /community/comment/update/:CommentId 진입");
+    const { reply } = req.body;
+    // reply가 없는 경우
+    if (!reply) {
+      res.status(resStatus.notenough.code).json({
+        meessage: resStatus.notenough.message,
+      });
+    } else {
+      const CommentId = parseInt(req.params.CommentId, 10);
+      const comment = await Comment.findOne({
+        where: { id: CommentId },
+      });
+      // comment 없는 경우
+      if (!comment[0]) {
+        res.status(resStatus.invalidi.code).json({
+          meessage: resStatus.invalidi.message,
+        });
+      } else {
+        const UserId = comment.dataValues.UserId;
+        // 로그인한 회원과 해당 게시글의 작성자가 불일치
+        if (UserId !== req.decoded.id) {
+          res.status(resStatus.different.code).json({
+            meessage: resStatus.different.message,
+          });
+        } else {
+          // 전제조건들을 만족하면
+          await Comment.update({ reply: reply }, { where: { id: CommentId } });
+          res.status(resStatus.success.code).json({
+            meessage: resStatus.success.message,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 댓글 삭제
+exports.deleteComment = async (req, res, next) => {
+  try {
+    console.log("POST /community/comment/delete/:CommentId 진입");
+    const CommentId = parseInt(req.params.CommentId, 10);
+    const comment = await Comment.findOne({
+      where: { id: CommentId },
+    });
+    if (!comment[0]) {
+      res.status(resStatus.invalidi.code).json({
+        meessage: resStatus.invalidi.message,
+      });
+    } else {
+      const UserId = comment.dataValues.UserId;
+      // 로그인한 회원과 해당 게시글의 작성자가 불일치
+      if (UserId !== req.decoded.id) {
+        res.status(resStatus.different.code).json({
+          meessage: resStatus.different.message,
+        });
+      } else {
+        await Recomment.destroy({
+          CommentId: CommentId,
+        });
+        await Comment.destroy({
+          id: CommentId,
+        });
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+        });
+      }
     }
   } catch (error) {
     console.error(error);
