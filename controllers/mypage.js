@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { resStatus } = require("../lib/responseStatus");
-const { User, Spaceship, Scoredata } = require("../models");
+const { User, Spaceship, Scoredata, Recomment } = require("../models");
 
 // mypage 페이지 들어가기 전 password 검사 페이지의 password-compare
 exports.pwcompare = async (req, res, next) => {
@@ -162,6 +162,10 @@ exports.authdelete = async (req, res, next) => {
   try {
     await Spaceship.destroy({ where: { UserId: req.decoded.id } });
     await User.destroy({ where: { id: req.decoded.id } });
+    await Recomment.update(
+      { nick: "탈퇴한 회원" },
+      { where: { id: req.decoded.id } }
+    );
     console.log("회원탈퇴 완료");
     return res.status(resStatus.success.code).json({
       // 200
