@@ -1,22 +1,22 @@
-const { resStatus } = require('../lib/responseStatus');
-const { User, Shipdata, Spaceship } = require('../models');
+const { resStatus } = require("../lib/responseStatus");
+const { User, Shipdata, Spaceship } = require("../models");
 
 // 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
 exports.shop = async (req, res) => {
   // console.log("req.decoded : ", req.decoded);
   try {
-    console.log('GET /SHOP 진입');
+    console.log("GET /SHOP 진입");
     // console.log("req.headers : ", req.headers);
     // console.log("req.body : ", req.body);
     // console.log("req.decoded : ", req.decoded);
     const user = await User.findOne({
       // where: { id: req.headers.userid },
       where: { id: req.decoded.id },
-      attributese: ['gold'],
+      attributese: ["gold"],
       include: [
         {
           model: Spaceship,
-          attributes: ['shipName'],
+          attributes: ["shipName"],
         },
       ],
     });
@@ -28,7 +28,7 @@ exports.shop = async (req, res) => {
     // (1) 로그인한 사용자의 보유한 우주선의 이름들이 포함되어있는 array
     const userShipData = await Spaceship.findAll({
       where: { userid: req.decoded.id },
-      attributes: ['shipName'],
+      attributes: ["shipName"],
     });
 
     // 로그인한 사용자의 보유한 우주선의 이름들
@@ -40,7 +40,7 @@ exports.shop = async (req, res) => {
 
     // (2) Shipdata의 모든 우주선의 이름들이 포함되어있는 array
     const allShipData = await Shipdata.findAll({
-      attributes: ['shipName'],
+      attributes: ["shipName"],
     });
 
     // 모든 우주선의 이름들
@@ -63,11 +63,11 @@ exports.shop = async (req, res) => {
       }
     }
 
-    console.log('###############');
+    console.log("###############");
     console.log(userShipName);
     console.log(allShipName);
-    console.log('availableShip : ', availableShip); // value가 4개인지 확인하기
-    console.log('@@@@@@@@@@@@@');
+    console.log("availableShip : ", availableShip);
+    console.log("@@@@@@@@@@@@@");
 
     /////////////////////////////////////////////////////////////////////
 
@@ -76,14 +76,14 @@ exports.shop = async (req, res) => {
     const gold = await User.findOne({
       // 로그인한 사용자의 gold량
       where: { id: req.decoded.id },
-      attributes: ['gold'],
+      attributes: ["gold"],
     });
 
     const userGold = gold.dataValues.gold;
 
     const allShipCostData = await Shipdata.findAll({
-      // Shipdata의 모든 우주선들의 cost. 배열로 나오나??
-      attributes: ['cost'],
+      // Shipdata의 모든 우주선들의 cost.
+      attributes: ["cost"],
     });
 
     const allShipCost = [];
@@ -91,7 +91,7 @@ exports.shop = async (req, res) => {
       allShipCost.push(allShipCostData[i].dataValues.cost);
     }
 
-    console.log('allshipcost: ', allShipCost);
+    console.log("allshipcost: ", allShipCost);
 
     // 보유gold와 우주선 가격을 비교하여 구매가능하면 true, 불가하면 false
     // true, false를 array에 담을 예정
@@ -120,11 +120,11 @@ exports.shop = async (req, res) => {
       }
     }
 
-    console.log('22###############');
-    console.log('availableGold : ', availableGold); // value가 4개인지 확인하기
-    console.log('availableShip : ', availableShip); // value가 4개인지 확인하기
-    console.log('availableResult : ', availableResult); // value가 4개인지 확인하기
-    console.log('11@@@@@@@@@@@@@');
+    console.log("22###############");
+    console.log("availableGold : ", availableGold); // value가 4개인지 확인하기
+    console.log("availableShip : ", availableShip); // value가 4개인지 확인하기
+    console.log("availableResult : ", availableResult); // value가 4개인지 확인하기
+    console.log("11@@@@@@@@@@@@@");
     /////////////////////////////////////////////////////////////////////
 
     res.status(resStatus.success.code).json({
@@ -152,12 +152,12 @@ exports.purchase = async (req, res) => {
     // const gold = User.findOne({ where: { id: req.headers.userid } });
     const goldData = await User.findOne({
       where: { id: req.decoded.id },
-      attributes: ['gold'],
+      attributes: ["gold"],
     });
     const gold = goldData.dataValues.gold;
     // console.log('gold: ', gold);
     const { selectedShip, selectedCost } = req.body;
-    console.log('POST /purchase 진입: ', selectedCost, selectedShip);
+    console.log("POST /purchase 진입: ", selectedCost, selectedShip);
     const afterGold = parseInt(gold) - parseInt(selectedCost); // 우주선 구매 후 남은 gold
     // console.log('afterGold : ', afterGold);
     // console.log('typeof afterGold', typeof afterGold);

@@ -31,6 +31,7 @@ module.exports = class Recomment extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Recomment.belongsTo(db.Comment, { onDelete: "CASCADE" });
+    db.Recomment.belongsTo(db.Comment);
+    db.Recomment.belongsTo(db.Post);
   }
 };

@@ -3,9 +3,7 @@ const Sequelize = require("sequelize");
 module.exports = class Comment extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
-      {
-
-      },
+      {},
       {
         sequelize,
         timestamps: true,
@@ -20,7 +18,7 @@ module.exports = class Comment extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Postlike.belongsTo(db.Post, { onDelete: "CASCADE" });
-    db.Postlike.belongsTo(db.User, { onDelete: "CASCADE" });
+    db.Postlike.belongsTo(db.Post);
+    db.Postlike.belongsTo(db.User);
   }
 };
