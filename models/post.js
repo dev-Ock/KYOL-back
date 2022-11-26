@@ -41,8 +41,12 @@ module.exports = class Post extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Post.belongsTo(db.User, { onDelete: "CASCADE" });
-    db.Post.hasMany(db.Postlike);
-    db.Post.hasMany(db.Comment);
+    db.Post.belongsTo(db.User);
+    db.Post.hasMany(db.Postlike, {
+      onDelete: "CASCADE",
+      hooks: true,
+    });
+    db.Post.hasMany(db.Comment, { onDelete: "CASCADE", hooks: true });
+    db.Post.hasMany(db.Recomment, { onDelete: "CASCADE", hooks: true });
   }
 };

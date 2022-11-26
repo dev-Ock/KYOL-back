@@ -12,6 +12,10 @@ module.exports = class Comment extends Sequelize.Model {
           type: Sequelize.STRING(50),
           allowNull: false,
         },
+        UserId: {
+          type: Sequelize.INTEGER(40),
+          allowNull: false,
+        },
       },
       {
         sequelize,
@@ -27,8 +31,10 @@ module.exports = class Comment extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Comment.belongsTo(db.Post, { onDelete: "CASCADE" });
-    db.Comment.belongsTo(db.User);
-    db.Comment.hasMany(db.Recomment);
+    db.Comment.belongsTo(db.Post);
+    db.Comment.hasMany(db.Recomment, {
+      onDelete: "CASCADE",
+      hooks: true,
+    });
   }
 };
