@@ -352,3 +352,175 @@ exports.deleteComment = async (req, res, next) => {
     next(error);
   }
 };
+
+// 대댓글 추가
+exports.addRecomment = async (req, res, next) => {
+  try {
+    console.log("POST /community/recomment/add/:PostId/:CommentId 진입");
+    const { re_reply } = req.body;
+    if (!re_reply) {
+      res.status(resStatus.notenough.code).json({
+        meessage: resStatus.notenough.message, // re_reply가 없는 경우
+      });
+    } else {
+      const PostId = parseInt(req.params.PostId, 10);
+      const CommentId = parseInt(req.params.CommentId, 10);
+      // console.log(PostId);
+      // console.log(CommentId);
+      const post = await Post.findOne({
+        where: { id: PostId },
+      });
+      const comment = await Comment.findOne({
+        where: { id: CommentId },
+      });
+      if (!post[0] || !comment[0]) {
+        // post가 없거나, comment가 없는 경우
+        res.status(resStatus.invalidi.code).json({
+          meessage: resStatus.invalidi.message,
+        });
+      } else {
+        // 전제조건들을 만족하면
+        const recomment = await Recomment.create({
+          UserId: req.decoded.id,
+          re_reply: re_reply,
+        });
+        await post.addRecomment(recomment);
+        await comment.addRecomment(recomment);
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 대댓글 수정
+exports.updateRecomment = async (req, res, next) => {
+  try {
+    console.log("POST /community/recomment/update/:RecommentId 진입");
+    const { re_reply } = req.body;
+    // re_reply가 없는 경우
+    if (!re_reply) {
+      res.status(resStatus.notenough.code).json({
+        meessage: resStatus.notenough.message,
+      });
+    } else {
+      const RecommentId = parseInt(req.params.RecommentId, 10);
+      const recomment = await Recomment.findOne({
+        where: { id: RecommentId },
+      });
+      // recomment가 없는 경우
+      if (!recomment[0]) {
+        res.status(resStatus.invalidi.code).json({
+          meessage: resStatus.invalidi.message,
+        });
+      } else {
+        const UserId = recomment.dataValues.UserId;
+        // 로그인한 회원과 해당 게시글의 작성자가 불일치
+        if (UserId !== req.decoded.id) {
+          res.status(resStatus.different.code).json({
+            meessage: resStatus.different.message,
+          });
+        } else {
+          // 전제조건들을 만족하면
+          await Recomment.update(
+            { re_reply: re_reply },
+            { where: { id: RecommentId } }
+          );
+          res.status(resStatus.success.code).json({
+            meessage: resStatus.success.message,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 대댓글 삭제
+exports.deleteRecomment = async (req, res, next) => {
+  try {
+    console.log("POST /community/recomment/delete/:RecommentId 진입");
+
+    const RecommentId = parseInt(req.params.RecommentId, 10);
+    const recomment = await Recomment.findOne({
+      where: { id: RecommentId },
+    });
+    if (!recomment[0]) {
+      res.status(resStatus.invalidi.code).json({
+        meessage: resStatus.invalidi.message,
+      });
+    } else {
+      const UserId = recomment.dataValues.UserId;
+      // 로그인한 회원과 해당 게시글의 작성자가 불일치
+      if (UserId !== req.decoded.id) {
+        res.status(resStatus.different.code).json({
+          meessage: resStatus.different.message,
+        });
+      } else {
+        await Recomment.destroy({
+          id: RecommentId,
+        });
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+// 좋아요 누를 때 (post -> 좋아요 수 증감 반영 / postlike -> 데이터 추가 혹은 삭제)
+exports.likePost = async (req, res, next) => {
+  try {
+    console.log("POST /community/post/like/:PostId 진입");
+    const { like_change } = req.body;
+    // like_change 값이 1이나 -1이 아닌 경우
+    if (!like_change || (like_change != 1 && like_change != -1)) {
+      res.status(resStatus.notenough.code).json({
+        meessage: resStatus.notenough.message,
+      });
+    } else {
+      const PostId = parseInt(req.params.PostId, 10);
+      // 좋아요 누름
+      if (like_change == 1) {
+        await Post.increment(
+          {
+            like: 1,
+          },
+          { where: { id: PostId } }
+        );
+        const postlike = await PostLike.create();
+        await Post.addPostlike(postlike);
+        await User.addPostlike(postlike);
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+        });
+      } else {
+        // 좋아요 취소
+        await Post.increment(
+          {
+            like: -1,
+          },
+          {
+            where: { id: PostId },
+          }
+        );
+        await PostLike.destroy({ where: { PostId: PostId } });
+        res.status(resStatus.success.code).json({
+          meessage: resStatus.success.message,
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
