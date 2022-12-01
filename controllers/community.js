@@ -296,6 +296,7 @@ exports.addComment = async (req, res, next) => {
         // 전제조건들을 만족하면
         const comment = await Comment.create({
           UserId: req.decoded.id,
+          nick: req.decoded.nick,
           reply: reply,
         });
         await post.addComment(comment);
