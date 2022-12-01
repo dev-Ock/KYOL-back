@@ -127,7 +127,10 @@ exports.beforeUpdatePost = async (req, res, next) => {
     });
 
     // post가 존재하지 않는다면
-    if (!post[0]) {
+    if (!post) {
+      res.status(resStatus.invalidi.code).json({
+        meessage: resStatus.invalidi.message,
+      });
     } else {
       const UserId = post.dataValues.UserId;
       // 로그인한 회원과 해당 게시글의 작성자가 불일치
