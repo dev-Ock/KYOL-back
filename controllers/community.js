@@ -206,6 +206,7 @@ exports.readPost = async (req, res, next) => {
   try {
     console.log("GET /community/post/read/:PostId 진입");
     const PostId = parseInt(req.params.PostId, 10);
+    // post 있는지 아래 if문에서 확인하기 위해 post 데이터 조회
     const post = await Post.findOne({
       where: { id: PostId },
     });
@@ -221,6 +222,16 @@ exports.readPost = async (req, res, next) => {
       const replyNum = comment.length; // comment 개수
       const recomment = await Recomment.findAll({
         where: { PostId: PostId },
+      });
+      await Post.increment(
+        {
+          count: 1,
+        },
+        { where: { id: PostId } }
+      );
+      // count 1 증가 반영한 post 데이터 조회
+      const post = await Post.findOne({
+        where: { id: PostId },
       });
       res.status(resStatus.success.code).json({
         meessage: resStatus.success.message,
