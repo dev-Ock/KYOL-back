@@ -34,7 +34,7 @@ router.delete("/post/delete/:PostId", verifyToken, deletePost); // 게시글 삭
 router.post("/comment/add/:PostId", verifyToken, addComment); // 댓글 추가
 router.put("/comment/update/:CommentId", verifyToken, updateComment); // 댓글 수정
 router.delete("/comment/delete/:CommentId", verifyToken, deleteComment); // 댓글 삭제
-router.post("/recomment/add/:CommentId", verifyToken, addRecomment); // 대댓글 추가
+router.post("/recomment/add/:PostId/:CommentId", verifyToken, addRecomment); // 대댓글 추가
 router.put("/recomment/update/:RecommentId", verifyToken, updateRecomment); // 대댓글 수정
 router.delete("/recomment/delete/:RecommentId", verifyToken, deleteRecomment); // 대댓글 삭제
 router.post("/post/like/:PostId", verifyToken, likePost); // 좋아요 누를 때 (post -> 좋아요 수 증감 반영 / postlike -> 데이터 추가 혹은 삭제)

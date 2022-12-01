@@ -170,7 +170,7 @@ exports.afterUpdatePost = async (req, res, next) => {
       });
     } else {
       // PostId가 post 테이블에 없으면
-      if (!post[0]) {
+      if (!post) {
         res.status(resStatus.invalidi.code).json({
           meessage: resStatus.invalidi.message,
         });
@@ -243,7 +243,7 @@ exports.deletePost = async (req, res, next) => {
       where: { id: PostId },
     });
     // console.log(post);
-    if (!post[0]) {
+    if (!post) {
       // PostId가 post 테이블에 없으면
       res.status(resStatus.invalidi.code).json({
         meessage: resStatus.invalidi.message,
@@ -288,7 +288,7 @@ exports.addComment = async (req, res, next) => {
         where: { id: PostId },
       });
       // post가 없는 경우
-      if (!post[0]) {
+      if (!post) {
         res.status(resStatus.invalidi.code).json({
           meessage: resStatus.invalidi.message,
         });
@@ -326,7 +326,7 @@ exports.updateComment = async (req, res, next) => {
         where: { id: CommentId },
       });
       // comment 없는 경우
-      if (!comment[0]) {
+      if (!comment) {
         res.status(resStatus.invalidi.code).json({
           meessage: resStatus.invalidi.message,
         });
@@ -360,7 +360,7 @@ exports.deleteComment = async (req, res, next) => {
     const comment = await Comment.findOne({
       where: { id: CommentId },
     });
-    if (!comment[0]) {
+    if (!comment) {
       res.status(resStatus.invalidi.code).json({
         meessage: resStatus.invalidi.message,
       });
@@ -409,7 +409,7 @@ exports.addRecomment = async (req, res, next) => {
       const comment = await Comment.findOne({
         where: { id: CommentId },
       });
-      if (!post[0] || !comment[0]) {
+      if (!post || !comment) {
         // post가 없거나, comment가 없는 경우
         res.status(resStatus.invalidi.code).json({
           meessage: resStatus.invalidi.message,
@@ -449,7 +449,7 @@ exports.updateRecomment = async (req, res, next) => {
         where: { id: RecommentId },
       });
       // recomment가 없는 경우
-      if (!recomment[0]) {
+      if (!recomment) {
         res.status(resStatus.invalidi.code).json({
           meessage: resStatus.invalidi.message,
         });
@@ -487,7 +487,7 @@ exports.deleteRecomment = async (req, res, next) => {
     const recomment = await Recomment.findOne({
       where: { id: RecommentId },
     });
-    if (!recomment[0]) {
+    if (!recomment) {
       res.status(resStatus.invalidi.code).json({
         meessage: resStatus.invalidi.message,
       });
