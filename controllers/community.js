@@ -6,7 +6,8 @@ const { Post, User, Comment, Recomment, PostLike } = require("../models");
 exports.wholeBoard = async (req, res, next) => {
   try {
     console.log("GET /community/list 진입");
-    const post = await Post.findAll();
+    const post = await Post.findAll({ order: [["id", "desc"]] });
+
     res.status(resStatus.success.code).json({
       data: post,
       meessage: resStatus.success.message,
