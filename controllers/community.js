@@ -205,7 +205,7 @@ exports.readPost = async (req, res, next) => {
     const post = await Post.findOne({
       where: { id: PostId },
     });
-    if (!post[0]) {
+    if (!post) {
       // PostId가 post 테이블에 없으면
       res.status(resStatus.invalidi.code).json({
         meessage: resStatus.invalidi.message,
