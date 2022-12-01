@@ -120,7 +120,7 @@ exports.writePost = async (req, res, next) => {
 // 게시글 수정 페이지 열 때
 exports.beforeUpdatePost = async (req, res, next) => {
   try {
-    console.log("POST /community/post/before-update/:PostId 진입");
+    console.log("GET /community/post/before-update/:PostId 진입");
     const post = await Post.findOne({
       where: { id: parseInt(req.params.PostId, 10) },
     });
@@ -152,7 +152,7 @@ exports.beforeUpdatePost = async (req, res, next) => {
 // 게시글 수정 적용하기
 exports.afterUpdatePost = async (req, res, next) => {
   try {
-    console.log("POST /community/post/after-update/:PostId 진입");
+    console.log("PUT /community/post/after-update/:PostId 진입");
     const PostId = parseInt(req.params.PostId, 10);
     const post = await Post.findOne({
       where: { id: PostId },
@@ -197,10 +197,42 @@ exports.afterUpdatePost = async (req, res, next) => {
   }
 };
 
+// 게시글 조회
+exports.readPost = async (req, res, next) => {
+  try {
+    console.log("GET /community/post/read/:PostId 진입");
+    const PostId = parseInt(req.params.PostId, 10);
+    const post = await Post.findOne({
+      where: { id: PostId },
+    });
+    if (!post[0]) {
+      // PostId가 post 테이블에 없으면
+      res.status(resStatus.invalidi.code).json({
+        meessage: resStatus.invalidi.message,
+      });
+    } else {
+      const comment = await Comment.findAll({
+        where: { PostId: PostId },
+      });
+      const replyNum = comment.length; // comment 개수
+      const recomment = await Recomment.findAll({
+        where: { PostId: PostId },
+      });
+      res.status(resStatus.success.code).json({
+        meessage: resStatus.success.message,
+        data: { post, comment, replyNum, recomment },
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 // 게시글 삭제
 exports.deletePost = async (req, res, next) => {
   try {
-    console.log("POST /community/post/delete/:PostId 진입");
+    console.log("DELETE /community/post/delete/:PostId 진입");
     const PostId = parseInt(req.params.PostId, 10);
     // console.log(PostId);
     const post = await Post.findOne({
@@ -277,7 +309,7 @@ exports.addComment = async (req, res, next) => {
 // 댓글 수정
 exports.updateComment = async (req, res, next) => {
   try {
-    console.log("POST /community/comment/update/:CommentId 진입");
+    console.log("PUT /community/comment/update/:CommentId 진입");
     const { reply } = req.body;
     // reply가 없는 경우
     if (!reply) {
@@ -319,7 +351,7 @@ exports.updateComment = async (req, res, next) => {
 // 댓글 삭제
 exports.deleteComment = async (req, res, next) => {
   try {
-    console.log("POST /community/comment/delete/:CommentId 진입");
+    console.log("DELETE /community/comment/delete/:CommentId 진입");
     const CommentId = parseInt(req.params.CommentId, 10);
     const comment = await Comment.findOne({
       where: { id: CommentId },
@@ -400,7 +432,7 @@ exports.addRecomment = async (req, res, next) => {
 // 대댓글 수정
 exports.updateRecomment = async (req, res, next) => {
   try {
-    console.log("POST /community/recomment/update/:RecommentId 진입");
+    console.log("PUT /community/recomment/update/:RecommentId 진입");
     const { re_reply } = req.body;
     // re_reply가 없는 경우
     if (!re_reply) {
@@ -445,7 +477,7 @@ exports.updateRecomment = async (req, res, next) => {
 // 대댓글 삭제
 exports.deleteRecomment = async (req, res, next) => {
   try {
-    console.log("POST /community/recomment/delete/:RecommentId 진입");
+    console.log("DELETE /community/recomment/delete/:RecommentId 진입");
 
     const RecommentId = parseInt(req.params.RecommentId, 10);
     const recomment = await Recomment.findOne({

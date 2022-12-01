@@ -11,6 +11,7 @@ const {
   writePost,
   beforeUpdatePost,
   afterUpdatePost,
+  readPost,
   deletePost,
   addComment,
   updateComment,
@@ -21,13 +22,14 @@ const {
   likePost,
 } = require("../controllers/community");
 
-router.get("/list", wholeBoard); // 전체 게시글 조회
-router.get("/list/selected-user", selectedUserBoard); // 선택한 user의 게시글들만 조회
-router.get("/list/some-nicks", someNicksBoard); // 검색한 word를 포함한 닉네임들이 쓴 게시글들만 조회
-router.get("/list/some-titles", someTitlesBoard); // 검색한 word를 포함한 제목의 게시글들만 조회
+router.get("/list", wholeBoard); // 전체 게시글 조회 (로그인 안 한 사람도 접근 가능)
+router.get("/list/selected-user", selectedUserBoard); // 선택한 user의 게시글들만 조회 (로그인 안 한 사람도 접근 가능)
+router.get("/list/some-nicks", someNicksBoard); // 검색한 word를 포함한 닉네임들이 쓴 게시글들만 조회 (로그인 안 한 사람도 접근 가능)
+router.get("/list/some-titles", someTitlesBoard); // 검색한 word를 포함한 제목의 게시글들만 조회 (로그인 안 한 사람도 접근 가능)
 router.post("/post/add", verifyToken, writePost); // 게시글 쓰기
 router.get("/post/before-update/:PostId", verifyToken, beforeUpdatePost); // 게시글 수정 페이지 열 때
 router.put("/post/after-update/:PostId", verifyToken, afterUpdatePost); // 게시글 수정 적용하기
+router.get("/post/read/:PostId", readPost); // 게시글 조회 (로그인 안 한 사람도 접근 가능)
 router.delete("/post/delete/:PostId", verifyToken, deletePost); // 게시글 삭제
 router.post("/comment/add/:PostId", verifyToken, addComment); // 댓글 추가
 router.put("/comment/update/:CommentId", verifyToken, updateComment); // 댓글 수정
