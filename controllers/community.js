@@ -268,7 +268,7 @@ exports.deletePost = async (req, res, next) => {
         });
       } else {
         // 전제조건들을 만족하면
-        await PostLike.destroy({ where: { PostId: PostId } });
+        // await PostLike.destroy({ where: { PostId: PostId } });
         await Recomment.destroy({ where: { PostId: PostId } });
         await Comment.destroy({ where: { PostId: PostId } });
         await Post.destroy({ where: { id: PostId } });
