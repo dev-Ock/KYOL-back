@@ -1,6 +1,7 @@
 const { resStatus } = require("../lib/responseStatus");
 const { User } = require("../models");
 
+// navbar 정보 조회
 exports.navbar = async (req, res, next) => {
   try {
     console.log("GET /main/navbar 진입");
@@ -18,6 +19,7 @@ exports.navbar = async (req, res, next) => {
   }
 };
 
+// main 정보 조회
 exports.main = async (req, res, next) => {
   try {
     console.log("GET /main 진입");

@@ -39,17 +39,4 @@ router.put("/recomment/update/:RecommentId", verifyToken, updateRecomment); // �
 router.delete("/recomment/delete/:RecommentId", verifyToken, deleteRecomment); // 대댓글 삭제
 router.post("/post/like/:PostId", verifyToken, likePost); // 좋아요 누를 때 (post -> 좋아요 수 증감 반영 / postlike -> 데이터 추가 혹은 삭제)
 
-// verifyToken 빼고 test할 때 아래 url로.
-// router.post("/post/add", writePost);
-// router.get("/post/before-update/:PostId", beforeUpdatePost);
-// router.put("/post/after-update/:PostId", afterUpdatePost);
-// router.delete("/post/delete/:PostId", deletePost);
-// router.post("/comment/add/:PostId", addComment);
-// router.post("/recomment/add/:PostId/:CommentId", addRecomment);
-// router.put("/recomment/update/:RecommentId", updateRecomment);
-// router.delete("/recomment/delete/:RecommentId", deleteRecomment);
-// router.put("/comment/update/:CommentId", updateComment);
-// router.delete("/comment/delete/:CommentId", deleteComment);
-// router.post("/post/like/:PostId", likePost);
-
 module.exports = router;
