@@ -1,8 +1,9 @@
 const { resStatus } = require("../lib/responseStatus");
 const { User, Shipdata, Spaceship } = require("../models");
 
-// 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
+// 상점 페이지 회원정보 조회
 exports.shop = async (req, res) => {
+  // 상점페이지로 들어가면, 현재 보유한 골드량과 우주선 목록을 보여주고, 상점의 우주선 상품 리스트를 띄어준다. 이를 위해 로그인한 사용자의 정보와 관계커리를 이용한 보유 우주선 목록(shipName)을 srver에서 보내준다.
   // console.log("req.decoded : ", req.decoded);
   try {
     console.log("GET /SHOP 진입");
@@ -147,6 +148,7 @@ shop에서 구매할 우주선(selectedShip)을 선택하면 사용자의 현재
 2. Spaceship테이블에는 내역 추가 (speed,bulletNumber는 front에 각 우주선에 대한 speed, bulletNumber 정보가 있으므로 DB에 저장할 필요 없음)
 */
 
+// 구매한 사항 update
 exports.purchase = async (req, res) => {
   try {
     // const gold = User.findOne({ where: { id: req.headers.userid } });

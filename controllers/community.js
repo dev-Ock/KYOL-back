@@ -23,7 +23,10 @@ exports.selectedUserBoard = async (req, res, next) => {
   try {
     console.log("GET /community/list/selected-user 진입");
     const { UserId } = req.body;
-    const post = await Post.findAll({ where: { UserId: UserId } });
+    const post = await Post.findAll({
+      where: { UserId: UserId },
+      order: [["id", "desc"]],
+    });
     res.status(resStatus.success.code).json({
       data: post,
       meessage: resStatus.success.message,
@@ -51,6 +54,7 @@ exports.someNicksBoard = async (req, res, next) => {
     }
     const post = await Post.findAll({
       where: { nick: arr },
+      order: [["id", "desc"]],
     });
     res.status(resStatus.success.code).json({
       data: post,
@@ -79,6 +83,7 @@ exports.someTitlesBoard = async (req, res, next) => {
     });
     const post = await Post.findAll({
       where: { title: arr },
+      order: [["id", "desc"]],
     });
     res.status(resStatus.success.code).json({
       data: post,
@@ -201,7 +206,7 @@ exports.afterUpdatePost = async (req, res, next) => {
   }
 };
 
-// 게시글 조회
+// 선택한 게시글 조회
 exports.readPost = async (req, res, next) => {
   try {
     console.log("GET /community/post/read/:PostId 진입");
@@ -218,10 +223,12 @@ exports.readPost = async (req, res, next) => {
     } else {
       const comment = await Comment.findAll({
         where: { PostId: PostId },
+        order: [["id", "desc"]],
       });
       const replyNum = comment.length; // comment 개수
       const recomment = await Recomment.findAll({
         where: { PostId: PostId },
+        order: [["id", "desc"]],
       });
       await Post.increment(
         {
@@ -385,10 +392,10 @@ exports.deleteComment = async (req, res, next) => {
         });
       } else {
         await Recomment.destroy({
-          CommentId: CommentId,
+          where: { CommentId: CommentId },
         });
         await Comment.destroy({
-          id: CommentId,
+          where: { id: CommentId },
         });
         res.status(resStatus.success.code).json({
           meessage: resStatus.success.message,
@@ -407,38 +414,47 @@ exports.addRecomment = async (req, res, next) => {
     console.log("POST /community/recomment/add/:PostId/:CommentId 진입");
     const { re_reply } = req.body;
     if (!re_reply) {
-      res.status(resStatus.notenough.code).json({
+      return res.status(resStatus.notenough.code).json({
         meessage: resStatus.notenough.message, // re_reply가 없는 경우
       });
-    } else {
-      const PostId = parseInt(req.params.PostId, 10);
-      const CommentId = parseInt(req.params.CommentId, 10);
-      // console.log(PostId);
-      // console.log(CommentId);
-      const post = await Post.findOne({
-        where: { id: PostId },
-      });
-      const comment = await Comment.findOne({
-        where: { id: CommentId },
-      });
-      if (!post || !comment) {
-        // post가 없거나, comment가 없는 경우
-        res.status(resStatus.invalidi.code).json({
-          meessage: resStatus.invalidi.message,
-        });
-      } else {
-        // 전제조건들을 만족하면
-        const recomment = await Recomment.create({
-          UserId: req.decoded.id,
-          re_reply: re_reply,
-        });
-        await post.addRecomment(recomment);
-        await comment.addRecomment(recomment);
-        res.status(resStatus.success.code).json({
-          meessage: resStatus.success.message,
-        });
-      }
     }
+    if (!req.decoded.nick || !req.decoded.id) {
+      return res.status(resStatus.notenough.code).json({
+        meessage: resStatus.notenough.message, // re_reply가 없는 경우
+      });
+    }
+    const PostId = parseInt(req.params.PostId, 10);
+    const CommentId = parseInt(req.params.CommentId, 10);
+    // console.log(PostId);
+    // console.log(CommentId);
+    const post = await Post.findOne({
+      where: { id: PostId },
+    });
+    const comment = await Comment.findOne({
+      where: { id: CommentId },
+    });
+    if (!post || !comment) {
+      // post가 없거나, comment가 없는 경우
+      return res.status(resStatus.invalidi.code).json({
+        meessage: resStatus.invalidi.message,
+      });
+    }
+    const UserId = post.dataValues.UserId;
+
+    console.log(re_reply, req.decoded.nick, req.decoded.id, UserId);
+
+    // 전제조건들을 만족하면
+    const recomment = await Recomment.create({
+      UserId: req.decoded.id,
+      re_reply: re_reply,
+      nick: req.decoded.nick,
+      UserId: req.decoded.id,
+    });
+    await post.addRecomment(recomment);
+    await comment.addRecomment(recomment);
+    return res.status(resStatus.success.code).json({
+      meessage: resStatus.success.message,
+    });
   } catch (error) {
     console.error(error);
     next(error);
@@ -512,7 +528,7 @@ exports.deleteRecomment = async (req, res, next) => {
         });
       } else {
         await Recomment.destroy({
-          id: RecommentId,
+          where: { id: RecommentId },
         });
         res.status(resStatus.success.code).json({
           meessage: resStatus.success.message,

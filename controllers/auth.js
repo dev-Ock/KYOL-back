@@ -38,6 +38,8 @@ exports.joinServiceNickCheck = async (req, res, next) => {
         message: resStatus.notenough.message, // no-nick
       });
     }
+
+    // nick 공백 검사
     let blank = /\s/g;
     if (nick.match(blank)) {
       return res.status(resStatus.blank.code).json({
@@ -45,6 +47,8 @@ exports.joinServiceNickCheck = async (req, res, next) => {
         message: resStatus.blank.message, // nick-is-null
       });
     }
+
+    // nick 중복 검사
     const exUser = await User.findOne({ where: { nick } });
     if (exUser) {
       return res.status(resStatus.invalidn.code).json({
